@@ -13,20 +13,21 @@ SQL, PHP, javascript, jQuery
 
 <h3>Location of Files:</h3>
 Main Page:
-public_html/main.html  &  public_html/js/index.js
+<a href = "./public_html/main.html"> main.html </a>
+<a href = "./public_html/js/index.js">index.js </a>
 
 Dashboard:
-public_html/dashboard.html  &  public_html/js/dashboard.js
+<a href = "./public_html/dashboard.html"> dashboard.html </a>
+<a href = "./public_html/js/dashboard.js">dashboard.js </a>
 
 Most PHP Logic:
-public_html/dbconnect.php
+<a href = "./public_html/dbconnect.php"> dbconnect.php </a>
 
 PHP APIs:
-public_html/api_scripts
+<a href = "./public_html/api_scripts/"> public_html/api_scripts </a>
 
 Marketing Emails:
-public_html/email_template
-
+<a href = "./public_html/email_template/"> public_html/email_template </a>
 
 <h3>Wish List:</h3>
 1) Simplify AJAX callbacks with promise architecture
