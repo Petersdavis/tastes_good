@@ -1,11 +1,9 @@
 <?php
 
 
-/*
-When I first started to write php I wanted to make everything into classes.  The file started getting bigger and bigger.  Some of the classes have methods to get and put information to the database--others don't as I started to do that coding in smaller specific php scripts.  90% of this is just sql queries.  The first 2 lines create the database connection.   
 
-*/
 ###Database Connections
+###DB Parameters Loaded from config file
 global $conn;
 
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -23,7 +21,8 @@ if (!$conn->set_charset("utf8")) {
 ### PHP Functions
 
 class Secure{
-	
+	### Class used to authorize all API interaction
+	### methods isUser() isSales() isRest() isAdmin() return true or die.
 	public $is_sales;
 	public $is_rest;
 	public $is_admin;
@@ -102,20 +101,8 @@ class Secure{
 }
 
 
-
-Class Market_Ord {
-	public $product_id;
-	public $product;
-	public $quantity;
-	public $price;
-	public $image;
-	public $rest_id;
-	public $total;
-	public $tg_points;
-	public $credit;
-}
-
 Class Schedule {
+	### Helper Class for Initializing a New Schedule
 	public $monday_open = "11:00";
 	public $tuesday_open = "11:00";
 	public $wednesday_open = "11:00";
@@ -133,6 +120,8 @@ Class Schedule {
 }
 
 Class Address {
+	###Contains Methods to Store and Retrieve Addresses
+	###Also contains Google API for finding GeoCoords of Address
 	public $id = -1;
 	public $user_id = "";
 	public $street = "";
@@ -229,6 +218,10 @@ Class Address {
 }
 	
 Class User {
+	###Contains Login Handling.  Security Authentication for Token Login
+	###Firebase Cloud Messenging API
+	###Can Edit User or Adjust Credit
+	
 	public $user_id = 0;
 	public $fname = "";
 	public $lname = "";
@@ -737,6 +730,8 @@ Class User {
 
 
 Class Order {
+	###Storing//Retriving//Deleting Orders
+	###Pays commission to sales Agents
      public $order_id;
 	 public $rest_id;
 	 public $user_id;
@@ -814,9 +809,6 @@ Class Order {
 	 function payCommissions(){
 	 	global $conn;
 	 	
-	 	//check if user is refered
-	 	
-	 	//check if user has orders
 	 	$sql = "SELECT order_id FROM restaurant_orders WHERE user_id = ?";
 	 	$stmt= $conn->prepare($sql);
 	 	$stmt->bind_param("i", $this->user_id);
@@ -882,6 +874,7 @@ Class Order {
 		
 	 		 
 }
+
 
 Class Option { 
 	public $choice;
@@ -951,20 +944,9 @@ Class Category {
 				
 	}
 			
-			
 		
-	
 
-	function PrintMe(){
-		
-		
-		echo '<div><h3>'. $this -> category . '</h3></div>';
-		
-	
-	
-	}
 }	
-
 
 Class Menu {
 	public $categories = [];
