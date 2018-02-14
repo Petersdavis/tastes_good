@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Expires" content="0" />
+	<meta name="google-signin-scope" content="profile email" />
+    <meta name="google-signin-client_id" content="1042635026617-9bh3uki5ifiohpj1ajkkgvv89cs8ol70.apps.googleusercontent.com" />
+    <meta http-equiv="Content-Security-Policy" content="img-src * data:; default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; " />
+    <title>Tastes-Good.com</title>
+    <meta name="description" content="ORDER ONLINE: Pickup and delivery from your favorite restaurants!">
+    <meta name="keywords" content="Food, Restaurant, Ordering, Pickup, Delivery, Eat, Quick, Cheep">
+	<!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    
+	<script src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="cordova.js"></script>
+	
+	<script src="js/jquery-ui.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/braintree-2.30.0.min.js"></script>
+	<script src="js/wickedpicker.js"></script>
+	<script src="js/boilerplate.js" ></script>
+	<script src="js/admin.js" ></script>   
+		
+	<link rel="stylesheet" href="css/wickedpicker.css" />
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="css/bootstrap-theme.min.css" />
+	<link rel="stylesheet" href="css/fonts.css"/>
+	<link rel="stylesheet" href="css/tastegood.css"/>
+	<link rel="stylesheet" href="css/jquery-ui.css"/>
+	
+		
+</head>
+  
+<body style = "height:100%;">
+
+<div class = "top-navbar">
+   <div class="navbar-inner">
+	<div class="nav navbar-header">
+		<a href="index.html"> <img class="image" src ="img/tg.png"> </image></a>
+	</div>
+	<button class ="btn" id="dropdown_btn" style="background-color:rgba(0,0,0,0);color:rgba(60,38,38,100);position:absolute;top:10px;right:25px;"><span class="glyphicon glyphicon-align-justify" style="font-size:30px;" aria-hidden="true"></span></button>
+		
+  </div>
+</div>
+
+<div id="navbar_dropdown" class="container main" hidden style="background-color: rgba(240,240,240,.9);background-clip:padding-box; border-color: rgba(0, 0, 0, 0.2);box-shaddow:0 3px 8px rgba(0, 0, 0, .3); border-style:solid; border-width:0.8px; border-radius:6px; width:20%;right:0;min-width:180px;position:fixed;top:73px; z-index:5000;padding:12px;">
+<div id="dropdown_rest">
+</div>
+<button id="dropdown_admin" class="btn btn-default btn-block">Admin Tools</button>
+<button id="dropdown_sales" style = "margin-bottom:12px;" class="btn btn-default btn-block">Sales Tools</button>
+<button id="dropdown_my_account"  class="btn btn-default btn-block">Settings</button>
+<button id="dropdown_past_orders"  class="btn btn-default btn-block">Past Orders</button>
+<button id="dropdown_logout" class="btn btn-default btn-block">Sign Out</button>
+<button id="dropdown_login" class="btn btn-default btn-block">Login</button>
+</div>
+
+<!--PDF iframe -->
+<div id = "pdf_preview_container">
+	<iframe id="pdf_preview" name="pdf_preview" src="" style="display:none;z-index:1001; position:absolute;width:100%;top:0px;height:100%"></iframe>
+</div>
+<div class="row" id ="pdf_preview_btns" style="display:none;z-index:1002;position:absolute;top:0;width:100%;">
+<div class="col-xs-6 no-padding">
+<button id="hide_pdf_preview" class="btn-lg btn-block btn btn-default" style="font-family:courier;font-weight:900;font-size:25px;padding:10px;" >Back</button>
+</div>
+<div class="col-xs-6 no-padding">
+<button id="print_pdf_preview" class="btn-lg btn-block btn btn-info" style="font-family:courier;font-weight:900;font-size:25px;padding:10px;" ><span class="glyphicon glyphicon-print"></span> Print</button>
+</div>
+</div>
+
+<div class="modal-dialog" id="admin_login" class = "modal-dialog"  style = "display:none;width:95%;max-width:900px;margin:auto; margin-top:10px; ">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h3 class= "modal-title">Restaurant Login: </h3>
+			  	
+		</div>
+	 
+		<div class="modal-body">
+			<div id = "main_login">
+				<form id="login" method="post" autocomplete="on"> 
+					<div class = "row">
+						<div class = "col-xs-12 col-sm-6">
+							<label for="userId" style = "display:none">Email Address:</label>
+							<input id="userId" class="form-control" type="text" placeholder="Email Address"> </input>	
+						</div>	
+						<div class = "col-xs-12 col-sm-6">
+							<label for="userPwd" style = "display:none">Password:</label>
+							 <input id="userPwd" class="form-control" required="required" type="password" placeholder="password" ></input>
+						</div>			  
+						<div class = "col-xs-12">
+							<button id = "forget_pwd" type = "button"  class="btn-block btn btn-link"  style = "color: #633E26;">Forgot Password?</button>
+						</div>		
+					</div>
+				</form>
+				<h2 class = "bg-danger" style="padding-top:5px;padding-bottom:5px;padding-left:10px;border-radius:6px;" id="wrong_pwd">Account password/user_name incorrect.</h2>
+				<h2 class = "bg-danger" style="padding-top:5px;padding-bottom:5px;padding-left:10px;border-radius:6px;" id="not_rest">This account is not yet associated with any Restaurants.  Click <a href"main.html">here</a> to return to the main site.</h2>
+				
+			</div>
+			<div id="forgotPwd" role = "document">
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class = "row">
+							<div class = "col-xs-12">
+								<form method="post" autocomplete="on"> 
+									<h3>Password Recovery: </h3>
+									<div class="row">
+										<div class = "col-xs-4"><label for="email_recovery">Email Address:</label></div>
+										<div class = "col-xs-8">
+											<input id="email_recovery" class="form-control"  type="text" ></input>
+										</div>
+										
+									</div>	
+									
+									<h2 class = "bg-danger" style="padding-top:5px;padding-bottom:5px;padding-left:10px;border-radius:6px;" id="email_noexist">Account does not exist.  Check email address.</h2>
+									<h2 class = "bg-success" style="padding-top:5px;padding-bottom:5px;padding-left:10px;border-radius:6px;" id="email_sent">Check your inbox for password recovery email.</h2>
+								</form>
+							</div>
+						</div>			
+					</div>	
+				
+					<div class="modal-footer">
+						<div class = "row" >	
+							<div class = "col-xs-6">
+								<button id = "forgot_pwd_Cancel"  class = "btn-block btn btn-primary">Cancel</button>
+							</div>
+							<div class = "col-xs-6">
+								<button id="submit_forgot_pwd" class = "btn-block btn btn-primary">Recover Password</button>
+							</div>
+							
+						</div>
+					</div>    
+				</div>
+				
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class = "row"  id = "existing_user_btn">	
+				<div class = "col-xs-6">
+					<button onclick = "window.location = 'main.html'" class = "btn-block btn btn-primary">Back</button>
+				</div>
+				<div class = "col-xs-6">
+					<button id="submit_login" class = "btn-block btn btn-primary">Login</button>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Main Applets -->
+<div id = "dashboard_main" style = "display:none;">
+	<div id = "dashboard_status" class = "modal-dialog"  style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; border-radius:6px; width:95%;max-width:900px;margin:auto; margin-top:10px; ">
+		<button id="manage_orders" class= "btn btn-block btn-lg btn-default">Manage Orders</button>
+		<button id="manage_users" class= "btn btn-block btn-lg btn-default">Manage Users</button>
+		<button id="manage_restaurants" class= "btn btn-block btn-lg btn-default">Manage Restaurants</button>
+		<button id="manage_payments" class= "btn btn-block btn-lg btn-default">Manage Payments</button>
+		<button id="manage_messages" class= "btn btn-block btn-lg btn-default">Message Board</button>
+	</div>
+</div>
+
+<!-- Orders -->
+<div id = "orders_div" style = "display:none;">
+	<div class = "modal-dialog"  style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; border-radius:6px; width:95%;max-width:900px;margin:auto; margin-top:10px; ">
+		<div class = "row no-padding">
+		<div class = "col-xs-4 no-padding">
+			<label for="search_order_id">Order Id:</label><br>
+			<input class="form-control" id="search_order_id"></input>
+		</div>
+		<div class = "col-xs-4  no-padding">
+			<label for="search_order_rest">Rest Id:</label><br>
+			<input class="form-control" id="search_order_rest"></input>
+		</div>
+		<div class = "col-xs-4 no-padding">
+			<label for="search_order_user">User Id:</label><br>
+			<input class="form-control" id="search_order_user"></input>
+		</div>
+		</div>
+		<button class= "btn btn-block btn-lg btn-primary">Search Orders</button>
+	
+		<h3>Pending Orders:</h3>
+		<div  id="pending_orders" style = "background-color:white;">
+		</div>
+					
+		<h3>Rejected Orders:</h3>
+		<div  id="rejected_orders" style = "background-color:white;">
+		</div>
+				
+		<h3>Confirmed Orders:</h3>
+		<div  id="confirmed_orders" style = "background-color:white;">
+		</div>
+	
+	</div>
+</div>
+
+
+<!-- Users -->
+
+<div id = "users_div" style = "display:none;">
+	<div class = "modal-dialog"  style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; border-radius:6px; width:95%;max-width:900px;margin:auto; margin-top:10px; ">
+		<div class = "row no-padding">
+		<div class = "col-xs-3 no-padding">
+			<label for="search_user_id">User Id:</label><br>
+			<input class="form-control" id="search_user_id"></input>
+		</div>
+		<div class = "col-xs-3 no-padding">
+			<label for="search_user_email">Email:</label><br>
+			<input class="form-control" id="search_user_email"></input>
+		</div>
+		<div class = "col-xs-3 no-padding">
+			<label for="search_user_rest">Rest Id:</label><br>
+			<input class="form-control" id="search_user_rest"></input>
+		</div>
+		<div class = "col-xs-3 no-padding">
+			<label for="search_user_order">Order Id:</label><br>
+			<input class="form-control" id="search_user_order"></input>
+		</div>
+		</div>
+		<button id="search_user"  class= "btn btn-block btn-lg btn-primary">Search Users</button>
+	
+		<h3>Users:</h3>
+		<div class = "row no-padding">
+		<div class = "col-xs-2">Id. </div>
+		<div class = "col-xs-3 no-padding">Name:</div>
+		<div class = "col-xs-4 no-padding">Email:</div>
+		<div class = "col-xs-1 no-padding">Sales:</div>
+		<div class = "col-xs-1 no-padding">Admin:</div>
+		<div class = "col-xs-1 no-padding">Rest:</div>
+		</div>
+		<div  id="user_list" style = "background-color:white;">
+		</div>
+								
+		
+		<button onclick= "$('#user_invitation_modal').modal('show');" class= "btn btn-block btn-lg btn-primary">Invite Users</button>
+		
+	</div>
+</div>
+
+
+
+<!-- Restaurants -->
+<div id = "restaurant_div" style = "display:none;">
+	<div class = "modal-dialog"  style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; border-radius:6px; width:95%;max-width:900px;margin:auto; margin-top:10px; ">
+								
+		<div class = "row no-padding">
+		<div class = "col-xs-3 no-padding">
+			<label for="search_rest_id">Rest Id:</label><br>
+			<input class="form-control" id="search_rest_id"></input>
+		</div>
+		<div class = "col-xs-3 no-padding">
+			<label for="search_rest_email">Email:</label><br>
+			<input class="form-control" id="search_rest_email"></input>
+		</div>
+		<div class = "col-xs-3 no-padding">
+			<label for="search_rest_user">Owner Id:</label><br>
+			<input class="form-control" id="search_rest_user"></input>
+		</div>
+		<div class = "col-xs-3 no-padding">
+			<label for="search_rest_order">Order Id:</label><br>
+			<input class="form-control" id="search_rest_order"></input>
+		</div>
+		</div>
+		<button id="search_rest" class= "btn btn-block btn-lg btn-primary">Search Restaurants</button>
+		
+		<h3>Active Restaurants:</h3>
+		<div  id="rest_active" style = "background-color:white;">
+		</div>
+		
+		<h3>Pending Restaurants:</h3>
+		<div  id="rest_pending" style = "background-color:white;">
+		</div>
+		
+		<h3>Prospect Restaurants:</h3>
+		<div  id="rest_prospect" style = "background-color:white;">
+		</div>
+		
+		<h3>Testing Restaurants:</h3>
+		<div  id="rest_testing" style = "background-color:white;">
+		</div>
+		
+		<h3>Other Restaurants:</h3>
+		<div  id="rest_other" style = "background-color:white;">
+		</div>
+		
+		
+		<button onclick= "$('#new_restaurant').modal('show');" class= "btn btn-block btn-lg btn-primary">Invite Restaurant</button>
+		
+	</div>
+</div>
+
+<!-- Payments -->
+<div id = "payments_div" style = "display:none;">
+	<div class = "modal-dialog"  style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; border-radius:6px; width:95%;max-width:900px;margin:auto; margin-top:10px; ">
+		
+		<div class = "row no-padding">
+		<div class = "col-xs-3 no-padding">
+			<label for="search_rest_id">Payment Id:</label><br>
+			<input class="form-control" id="search_payment_id"></input>
+		</div>
+		<div class = "col-xs-3 no-padding">
+			<label for="search_rest_id">User Id:</label><br>
+			<input class="form-control" id="search_payment_user"></input>
+		</div>
+		</div>
+		<button id="search_payment" class= "btn btn-block btn-lg btn-primary">Search Payments</button>
+	
+		<h3>Payment Pending Users:</h3>
+		<div  id="payment_pending" style = "background-color:white;">
+		</div>
+		
+		<h3>Recent Payments:</h3>
+		<div  id="payment_recent" style = "background-color:white;">
+		</div>
+		
+		
+	</div>
+</div>
+
+
+<!-- Message Board -->
+<div id = "message_div" style = "display:none;">
+	<div class = "modal-dialog"  style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; border-radius:6px; width:95%;max-width:900px;margin:auto; margin-top:10px; ">
+		<h3>User Messages:</h3>
+		<div  id="message_recent" style = "background-color:white;">
+		</div>
+				
+		<h3>SalesForce: </h3>
+		<div  id="message_recent_sales" style = "background-color:white;">
+		</div>
+		
+		<h3>System: </h3>
+		<div  id="message_recent_system" style = "background-color:white;">
+		</div>
+			
+		
+		<button id="create_message" class= "btn btn-block btn-lg btn-primary">Leave a Message</button>
+		
+	</div>
+</div>
+
+
+<!--Modals-->
+
+<div class="modal fade" id="order_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Order Details:</h3>
+      </div>
+      <div class="modal-body">
+      <h3>Order Details</h3>
+      <div id = "order_details_div">
+      </div>
+           
+      <h3>User Details</h3>
+	  <div id = "order_user_div">
+	  </div>
+      
+      <h3>Restaurant Details</h3>
+      <div id = "order_rest_div">
+      </div>
+      
+      <h3>Order Actions:</h3>
+      <div class = "row no-padding">
+      <div class="col-xs-4"> <button id="order_detail_cancel" class = "btn btn-primary btn-block">Cancel Order</button></div>
+      <div class="col-xs-4"> <button id="order_detail_refund" class = "btn btn-primary btn-block">Partial Refund Order</button></div>
+      <div class="col-xs-4"> <button id="order_detail_credit" class = "btn btn-primary btn-block">Credit User</button></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" class="btn-primary btn-block" style="height:34px;width:18%" data-dismiss="modal">back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="restaurant_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Restaurant Details:</h3>
+      </div>
+      <div class="modal-body">
+      <h3>Past Orders</h3>
+	  <div id = "restaurant_orders_div">
+	  </div>
+      
+      <h3>Owner Details</h3>
+	  <div id = "restaurant_owner_div">
+	  </div>
+	  <h3>Salesforce Relationships:</h3>
+	  <div id = "restaurant_sales_div">
+	  </div>
+	  
+	  
+	  <h3>Restaurant Actions:</h3>
+	  <div class = "row no-padding">
+		  <div class="col-xs-4"> <button id="restaurant_detail_approve" class = "btn btn-primary btn-block">Approve Restaurant</button></div>
+		  <div class="col-xs-4"> <button id="restaurant_detail_suspend" class = "btn btn-primary btn-block">Suspend Restaurant</button></div>
+		  <div class="col-xs-4"> <button id="restaurant_detail_activate" class = "btn btn-primary btn-block">Activate Restaurant</button></div>
+      
+      </div>
+	  
+	  
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" class="btn-primary btn-block" style="height:34px;width:18%" data-dismiss="modal">back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="user_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">User Details:</h3>
+      </div>
+      <div class="modal-body">
+      <h3>User Credit:</h3>
+      <div class = "row no-padding">
+      <div class = "col-xs-8"><button id="user_make_payment" class = "btn btn-block btn-info">Make Payment</button></div>
+      <div class = "col-xs-4"><button id="user_detail_credit" class = "btn btn-block btn-default">$0.00</button></div>
+      </div>
+            
+      <h3>User Details:</h3>
+	  <div class = "row">
+		  <div class = "col-xs-3"><label for= "user_detail_fname">First Name:</label></div>
+		  <div class = "col-xs-3"><input id= "user_detail_fname" class = "form-control"></input></div>
+		  <div class = "col-xs-3"><label for= "user_detail_lname">Last Name:</label></div>
+		  <div class = "col-xs-3"><input id= "user_detail_lname" class = "form-control"></input></div>
+		  <div class = "col-xs-3"><label for= "user_detail_email">Email:</label></div>
+		  <div class = "col-xs-9"><input id= "user_detail_email" class = "form-control"></input></div>
+		  <div class = "col-xs-3"><label for= "user_detail_phone">Phone:</label></div>
+		  <div class = "col-xs-9"><input id= "user_detail_phone" class = "form-control"></input></div>
+		  <div class = "col-xs-12"><button class = "btn btn-primary btn-block">Save Details</button></div>
+	  </div>
+	  	  
+	  <h3>User Address Book: </h3>
+      <div id = "user_address_div">
+	  </div>
+	  	        
+      <h3>Owns Restaurant:</h3>
+      <div id = "user_restaurant_div">
+	  </div>
+	  
+	  <h3>Salesforce Relationships:</h3>
+      <div id = "user_sales_div">
+	  </div>
+	  
+      <h3>Past Orders</h3>
+	  <div id = "user_orders_div">
+	  </div>
+            
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" class="btn-primary btn-block" style="height:34px;width:18%" data-dismiss="modal">back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="payment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">User Details:</h3>
+      </div>
+      <div class="modal-body">
+     
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" class="btn-primary btn-block" style="height:34px;width:18%" data-dismiss="modal">back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="new_message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Leave a Message:</h3>
+      </div>
+      <div class="modal-body">
+      	<div class = "row no-padding" style="background-color:rgba(255,255,255,.4);">
+			
+			<div class = "col-xs-12" style="margin-top:10px;">
+				<label for="footer_message">Message:</label>
+				<textarea class ="form-control" rows="4" id="footer_message"></textarea>
+			</div>			
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" class="btn-primary btn-block" style="height:34px;width:18%" data-dismiss="modal">back</button>
+        <button type="button" id="submit_message" class="btn btn-primary btn-block" style="height:34px;width:18%;float:right;">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="Contact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Leave a Message:</h3>
+      </div>
+      <div class="modal-body">
+      	<div class = "row no-padding" style="background-color:rgba(255,255,255,.4);">
+			
+			<div class = "col-xs-12" style="margin-top:10px;">
+				<label for="footer_name">Name:</label>
+				<input  class = "form-control form-control-inline" id = "footer_name" type="text" placeholder= "Your Name" >
+				
+				</input>
+			</div>
+			<div class = "col-xs-12" style="margin-top:10px;">
+				<label for="footer_email">Email:</label>
+				<input class = "form-control form-control-inline" id = "footer_email" type="text" placeholder = "email@abc.com" />
+			</div>
+			<div class = "col-xs-12" style="margin-top:10px;">
+				<label for="footer_reason">Contact Reason:</label>
+				<select class ="form-control" id="footer_reason">
+				  <option value="ORDER">Problem with an Order</option>
+				  <option value="BILLING">Billing/Receipts</option>
+				  <option value="TECH">Technical Issue</option>
+				  <option value="FEEDBACK" selected = "selected">Website Feedback</option>
+				  <option value="FRAUD">Report Fraud</option>
+				  <option value="PRIVACY">Our Privacy Policy</option>
+				  <option value="PARTNER">Partnership Inquiry </option>
+				  <option value="OTHER">Other </option>
+				</select>
+			</div>
+			<div class = "col-xs-12" style="margin-top:10px;">
+				<label for="footer_message">Message:</label>
+				<textarea class ="form-control" rows="4" id="footer_message"></textarea>
+			</div>			
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" class="btn-primary btn-block" style="height:34px;width:18%" data-dismiss="modal">back</button>
+        <button type="button" onclick="sendEmail();" class="btn btn-primary btn-block" style="height:34px;width:18%;float:right;">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="new_restaurant" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <div class="modal-dialog" role="document" style="font-family:courier;">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel" style="font-size:22px;">New Restaurant:  <span style="color:#633E26" id="prospect_title"></span></h3>
+      </div>
+      <div class="modal-body"> 
+      <h2 style="font-size:20px; margin:10px;">Restaurant details: </h2>
+      	<input id="new_title" class= "form-control input-lg" placeholder="Title" />
+      	<input id="new_address" class= "form-control input-lg" placeholder="Restaurant Address" />
+      	<input id="new_phone" class= "form-control input-lg" placeholder="111-111-1111" />
+      	<input id="new_email" class= "form-control input-lg" placeholder="email@example.com" />
+      
+      </div>
+
+      <div class="modal-footer">
+        <button class= "btn btn-info btn-lg" id="new_restaurant_submit">Create Restaurant</button>
+      	<button type="button" class="btn btn-lg btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+ </div>
+</div>
+
+<div class="modal fade" id="user_invitation_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title"  style="font-size:22px;">Invite New User:</h3>
+      </div>
+      <div class="modal-body"> 
+
+			<div class= "row">
+			<div class= "col-xs-6">
+				<label for="user_invitation_email">Email:</label><br>
+				<input id ="user_invitation_email" class="form-control"></input>
+			</div>
+			<div class= "col-xs-3">
+				<label for="user_invitation_sales">Sales:</label><br>
+				<input id ="user_invitation_sales" type = "checkbox" class="form-control"></input>
+			</div>
+			<div class= "col-xs-3">
+				<label for="user_invitation_admin">Admin:</label><br>
+				<input id ="user_invitation_admin" type = "checkbox" class="form-control"></input>
+			</div>
+			</div>
+		</div>
+
+      <div class="modal-footer">
+        <button  type="button" class="btn btn-default" data-dismiss="modal">Back</button>
+        <button id= "user_invitation_submit" class="btn btn-primary">Send Invitation</button>
+      </div>
+    </div>
+ </div>
+</div>
+
+
+
+
+

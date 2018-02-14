@@ -1,0 +1,20 @@
+[07-Jan-2018 13:17:22 America/Denver] PHP Parse error:  syntax error, unexpected '$stmt' (T_VARIABLE) in /home1/tastesgo/public_html/uploader/order_confirm.php on line 37
+[07-Jan-2018 13:19:05 America/Denver] PHP Parse error:  syntax error, unexpected '$stmt' (T_VARIABLE) in /home1/tastesgo/public_html/uploader/order_confirm.php on line 33
+[07-Jan-2018 13:19:25 America/Denver] PHP Parse error:  syntax error, unexpected ';' in /home1/tastesgo/public_html/uploader/order_confirm.php on line 137
+[07-Jan-2018 13:19:51 America/Denver] PHP Parse error:  syntax error, unexpected ';' in /home1/tastesgo/public_html/uploader/order_confirm.php on line 144
+[07-Jan-2018 22:39:07 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 22:39:07 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 22:39:51 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 22:39:51 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 22:40:24 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 22:49:46 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 22:50:22 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 22:51:19 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 22:52:22 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 22:59:18 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 23:00:02 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 23:00:09 America/Denver] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home1/tastesgo/public_html/uploader/order_reject.php on line 109
+[07-Jan-2018 23:02:00 America/Denver] PHP Parse error:  syntax error, unexpected '}' in /home1/tastesgo/public_html/uploader/order_reject.php on line 121
+[10-Jan-2018 21:01:05 UTC] PHP Notice:  Undefined property: mysqli::$close in /home1/tastesgo/public_html/uploader/activate_restaurant.php on line 57
+[11-Jan-2018 10:32:47 America/Toronto] PHP Notice:  unserialize(): Error at offset 0 of 1 bytes in /home1/tastesgo/public_html/dbconnect.php on line 547
+[11-Jan-2018 10:32:47 America/Toronto] PHP Notice:  Trying to get property of non-object in /home1/tastesgo/public_html/dbconnect.php on line 548

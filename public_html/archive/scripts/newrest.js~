@@ -1,0 +1,106 @@
+var hostname = location.hostname
+
+function submitChoice(choice){
+	var formData = new FormData ();
+	var status = {"status":choice};
+	
+	formData.append ('status', JSON.stringify(status));
+									
+			var xhr = new XMLHttpRequest();
+			
+			xhr.onload = function() {
+				console.log(xhr.response);				
+				
+			};
+			// Open the connection.
+			xhr.open('POST', 'https://'+ hostname + '/uploader/rest_status.php', true);
+			xhr.send(formData);	
+	
+	
+}
+
+function submitData(email, phone){
+	var formData = new FormData ();
+	var contact_details = {"email":email, "phone":phone};
+	
+	formData.append ('contact', JSON.stringify(contact_details));
+									
+			var xhr = new XMLHttpRequest();
+			
+			xhr.onload = function() {
+				console.log(xhr.response);				
+				
+			};
+			// Open the connection.
+			xhr.open('POST', 'https://'+ hostname + '/uploader/newRest.php', true);
+			xhr.send(formData);	
+	
+	
+}
+
+$(function(){ 
+	
+	
+	$('[name="consent"]').change(function(){
+		if($('#privacy_consent').prop("checked") && $('#terms_consent').prop("checked"))
+		{
+			$('#consent_continue').prop("disabled", false).removeClass("disabled");
+		} else {
+			$('#consent_continue').prop("disabled", true).addClass("disabled");
+		}
+			
+	});
+		
+	$('#left_nav').find("a").addClass("disabled").bind("click", function (e) {
+		e.preventDefault();
+   	});
+			
+	$('#save_details').click(function(){
+		var validForm = 1;
+		//email address	
+		var pattern = /@/
+			
+		if(!pattern.test($('#email').val())){
+			alert("invalid Email address");
+			validForm = 0;
+					
+		}
+		
+		pattern =  /[0-9]{3}[\D]*[0-9]{3}[\D]*[0-9]{4}/
+		
+		if (!pattern.test($('#phone').val())){
+			alert ("invalid phone");
+			validForm = 0;
+		}
+		if(validForm == 1){
+			submitData( $('#email').val(), $('#phone').val());
+			$('#contact_details').hide(); 
+			$('#sales_pitch').show();
+			
+		}
+
+		
+	});
+	$('#btn_continue').click(function(){
+			
+			
+	});
+	
+	$('#consent_continue').click(function(){
+		//change state -> Registration
+		submitChoice("TESTING");
+		//create the checklist object
+		checklist = {"login":1,"details":0,"menu":0, "print":0, "coupon":0, "launch":0}
+		window.localStorage.setItem("TGchecklist", JSON.stringify(checklist));
+		
+		window.location = "index.php?new_rest=1";
+		//direct to community page.
+	});
+	
+	$('#btn_decline').click(function(){
+		submitChoice("DECLINED");
+		$('#sales_pitch').hide();
+		$('#exit').show();
+		
+	});		
+});

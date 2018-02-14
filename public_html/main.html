@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<meta charset="utf-8" />
+    <title>Tastes-Good.com</title>
+    <meta property="og:image" content="http://www.tastes-good.com/img/tg_fb.png" />
+    <meta name="description" content="ORDER ONLINE: Pickup and delivery from your favorite restaurants!">
+    <meta name="keywords" content="Food, Restaurant, Ordering, Pickup, Delivery, Eat, Quick, Cheep">
+	<meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Expires" content="0" />
+	<meta name="google-signin-scope" content="profile email" />
+    <meta name="google-signin-client_id" content="1042635026617-9bh3uki5ifiohpj1ajkkgvv89cs8ol70.apps.googleusercontent.com" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'unsafe-inline' 'unsafe-eval' 'self' https://tastes-good-7599.firebaseapp.com/ https://apis.google.com/ https://www.tastes-good.com https://ssl.gstatic.com https://csi.gstatic.com www.gstatic.com/firebasejs/ assets.braintreegateway.com checkout.paypal.com api.sandbox.braintreegateway.com api.braintreegateway.com js.braintreegateway.com assets.braintreegateway.com www.paypalobjects.com c.paypal.com client-analytics.sandbox.braintreegateway.com client-analytics.braintreegateway.com https://maps.googleapis.com data: gap:;  font-src *; " />
+	  
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    
+	<script src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="cordova.js"></script>
+	
+	<script src="js/jquery-ui.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/braintree-2.30.0.min.js"></script>
+	<script src="js/wickedpicker.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD32Gk7NNgIQL30INQdSP2iTFxaDo0To-g&libraries=places"></script>
+	<script src="js/boilerplate.js" ></script>
+	<script src="js/index.js" ></script>
+	
+	
+		
+	<link rel="stylesheet" href="css/wickedpicker.css" />
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="css/bootstrap-theme.min.css" />
+	<link rel="stylesheet" href="css/fonts.css"/>
+	<link rel="stylesheet" href="css/tastegood.css"/>
+	
+		
+</head>
+  
+<body style = "height:100%;">
+<div id="fb-root"></div>
+<script>//Facebook Load SDK
+/*(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+*/
+</script>
+
+<!-- Top NavBar -->
+<div class = "top-navbar">
+   <div class="navbar-inner">
+		<div class="nav navbar-header">
+			<a href="index.html"> <img class="image" src ="img/tg.png"> </image></a>
+		</div>
+		<div id = "dropdown_btn" class= "btn btn-info" style="position:absolute;top:0px;height:70px;right:5px;width:125px;max-width:20% !important">
+			<div class="row no-padding">
+				<div class="col-xs-8 no-padding">
+					<h2 id = "top_user_name">Peter Davis</h2>
+					<button id = "top_credit" title = "credit:" class = "btn btn-default btn-block" >$0.00</button>
+				</div>
+				<div class="col-xs-4 no-padding">
+					<button class ="btn"  style="background-color:rgba(0,0,0,0);color:lightgrey;"><span class="glyphicon glyphicon-user" style="font-size:30px;" aria-hidden="true"></span></button>
+				</div>
+			</div>
+		</div>
+		
+		<div id="dropdown_login" class= "no-padding btn btn-info" style="position:absolute;top:0px;height:70px;right:5px;width:125px;max-width:20% !important">
+			<div class = "row no-padding">
+			<div class = "col-xs-12 col-sm-8 no-padding">
+			 <h3 style = "font-size:20px;">Login</h3>
+			</div>
+			<div class = "col-sm-4 no-padding">
+				<button class ="btn"  style="background-color:rgba(0,0,0,0);color:lightgrey;"><span class="glyphicon glyphicon-user" style="font-size:25px;" aria-hidden="true"></span></button>
+			</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+<div id="navbar_dropdown" class="container main" hidden style="background-color: rgba(240,240,240,.9);background-clip:padding-box; border-color: rgba(0, 0, 0, 0.2);box-shaddow:0 3px 8px rgba(0, 0, 0, .3); border-style:solid; border-width:0.8px; border-radius:6px; width:20%;right:0;min-width:180px;position:fixed;top:73px; z-index:5000;padding:12px;">
+<div id="dropdown_rest">
+</div>
+<button id="dropdown_admin" class="btn btn-default btn-block">Admin Tools</button>
+<button id="dropdown_sales" style = "margin-bottom:12px;" class="btn btn-default btn-block">Sales Tools</button>
+<button id="dropdown_my_prospects"  class="btn btn-default btn-block">Invite Friends.. Earn Credits!</button>
+<button id="dropdown_my_account"  class="btn btn-default btn-block">Settings</button>
+<button id="dropdown_past_orders"  class="btn btn-default btn-block">Past Orders</button>
+<button id="dropdown_logout" class="btn btn-default btn-block">Sign Out</button>
+
+</div>
+
+<!-- Sub NavBar -->
+<div  id="xs_navbar" style="display:none; min-height:50px;" >
+
+	<div class= "hidden-sm hidden-md hidden-lg" style="position:fixed;height:30px;top:77px;z-index:100;width:48%; left:45%">
+		<button id="xs_total_btn" class="btn btn-warning" style="width:100%;font-size:18px"></span>Order Total: <span id="xs_total" style="margin-right:5px">$0.00</span>[...]</button>
+	</div>
+	<div class= "hidden-sm hidden-md hidden-lg" style="position:fixed;height:30px;top:77px;z-index:100;width:38%;left:5%">
+		<button id="xs_confirm_btn" class="btn btn-default" style="width:100%;font-size:18px"> Send Order</button>
+	</div>
+
+</div>
+
+
+
+
+<!-- Main Applets -->
+<div id="loading_gif" style="border-width:0.8px;border-style:solid;display:none; position:fixed; height:150px; top:35%; width:50%; left:25%; border-radius:8px; box-shadow: 2px 2px 4px darkgrey;z-index:10000;background-color:white">
+<img src="img/loading.gif" style="height:140px;margin:5px;">
+<strong style="font-size:25px;"> Loading... </strong>
+</div>
+
+
+<!-- Choose Community -->
+
+<div id="select_community" class = "modal-dialog"  style = "display:none; background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; border-radius:6px; width:95%;max-width:900px;margin:auto; margin-top:10px; ">
+
+	<div class="modal-header">
+		<h3 style="font-size:20px;margin:5px;">1. Choose Your Community:</h3>
+		
+	</div>
+	
+	<div id="rest_search" class = "modal-content" style="min-height:150px;padding:15px"> 
+	   <div class="row">
+			<div class = "col-xs-8">
+				<label for ="community" class="sr-only">Our Communities</label>
+				<select id = "community" class= "form-control form-control-lg" style="display:inline-block; height:35px;font-size:15px;">
+					
+				</select>
+			</div>
+			
+			
+			<div class = "col-xs-4">
+				<button type="button" id="getList" class="btn-default btn-block" style="height:34px;border-radius:6px;">Search</button>
+			</div>
+			<div class = "col-xs-12">
+				<button type="button" class="btn-info btn-block" style="height:34px;margin-top:10px;border-radius:6px;" onclick="locationSearch()"><span class="glyphicon glyphicon-map-marker"></span> Use Geolocation</button>
+			</div>
+	  </div>
+	
+	</div>
+
+</div>
+
+
+<!-- Choose Restaurant-->
+<div id = "select_restaurant" style="display:none;" >
+	<div name = "single_pane_layout"  class = "modal-dialog"  style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; border-radius:6px; width:95%;max-width:900px;margin:auto; margin-top:10px; ">
+	<div class = "modal-header">
+		<a id="back_community" onclick = "$('#select_restaurant').hide(0); history.back()"><h3 style="margin:5px; font-size:20px;">1. Location: <span name="active_community"></span></h3></a>
+	</div>
+	<div class="modal-header">
+		
+		<h3 style="margin:5px; font-size:20px;">2. Pick Restaurant:</h3>
+		<h2 style="margin:5px; font-size:20px;">Found <span id="rest_count"></span> Restaurants.</h2>
+			
+	</div>
+	<div class="modal-content">
+		<div style="margin-top:10px; height:auto; overflow:auto;background-color:rgb(255, 255, 255)">
+			<div class="row">
+				<!--
+				<div class= col-xs-6>
+					<button class = "btn btn-info btn-block" style="display:none;">Restaurant Filters</button>
+				</div>  -->
+				<div class= col-xs-12>
+					<button id="show_coupons" class = "btn btn-info btn-block" >Show Coupons</button>
+					<button id="show_rest" class = "btn btn-info btn-block" style="display:none;margin-top:0px;">List Restaurants</button>
+				</div>
+			
+			</div>
+			
+			<ul id = "restaurants" class="list-group">
+			
+			</ul>
+			
+						
+			<div id= "coupons" style="display:none;">
+				
+								
+			</div>
+			
+			
+		</div>
+	</div>	
+	</div>
+</div>
+	
+	
+<!-- Place Order -->
+<div id = "place_order" style = "display:none;" class = "row">
+	<div class = "col-sm-8" style="margin-bottom:10px;">
+		<div  style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; margin:15px; margin-top:0px; margin-bottom:0px; border-radius:6px;">
+			<div class = "modal-header">
+				<a id="back_list" onclick = "$('#place_order').hide(0); history.back();"><h3 style="margin:5px; font-size:20px;">1. Location: <span name="active_community"></span></h3></a>
+			</div>
+			<div class = "modal-header">
+				<h3 style="margin:5px; font-size:20px;">2. Restaurant:  <span name="rest_title" style="font-size:22px; margin-top:5px;"></span></h3>
+			</div>
+			<div id="rest_info" class = "row modal-content" style="border:0.8px solid darkgrey; border-radius:4px;margin:0px;padding:10px;">
+				<div class = "col-xs-4 no-padding" >
+				
+				<img id="rest_image" class="image-rounded" style = "border-radius: 2px; height:100%; width:100%; max-height:100px; max-width:100px;" /> <br>
+				<button id="show_list" class="btn btn-default" click="history.back();" style="width:100%; max-width:100px;">Back</button>
+				</div>
+				<div class = "col-xs-8 no-padding">
+				
+				
+				<h2 id="rest_phone"></h2>
+				<h2 id="rest_address"></h2>
+				<h2><strong>Open: </strong><span id="rest_open"></span><strong style="margin-left:10px;">Close: </strong> <span id="rest_close"></span> </h2>
+				<h2><strong>Delivery Charge:  </strong> <span id="rest_delivery"></span></h2>
+				
+				</div>
+			</div>
+		</div>
+		<div  style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; margin:15px; margin-top:15px; margin-bottom:0px; border-radius:6px;">
+			<div class="modal-header">
+				<h3 style="margin-top:5px;font-size:20px;">3. Select Items from Menu:</h3>
+			</div>
+			<div class="modal-content" style="border-radius: 0 0 6px 6px;">
+				<ul id="menu" class = "list-group">
+				 
+				</ul>
+			
+			</div>
+		</div>
+	</div>
+	
+	<div class = "col-sm-4">
+		<div style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; border-radius:2px; margin-right:15px;">
+			
+			<div class="modal-header">
+				<h3 style = "margin:5px;font-size:20px;">Order Details:</h3> 
+			</div>
+			
+			<div class="modal-content" style="min-height:250px;">
+			<ul id="current_order"  class = "list-group">
+			  <li class = "list-group-item" id = "order_placeholder">There are no items in your order.</li>  
+			</ul>
+			
+			</div>
+			
+			<div id="current_total" class="modal-header">
+				<h2 style = "font-size:16px;">Sub-Total: <span style="float:right;"  id="sub_total"></span> </h2>
+				<h2 id ="discount_coupon" style="font-size:16px; display:none">Discount <span style="float:right;" id="order_discount">$0.00</span></h2>
+				<h2 style = "font-size:16px;">Tax: <span style="float:right;"  id="tax"></span></h2>
+				<hr style="height:0.8px;border:none;color:#633E26;background-color:#633E26;" >
+				
+				<h2 style = "font-size:20px;">Total: <span style="float:right;" id="total"></span></h2>
+			
+				
+			</div>
+			<button id="submit_Order" class="btn btn-primary btn-block" style="width:100%;font-size:18px">Order Confirmation</button>
+			
+		
+		</div>
+	</div>
+	
+</div>	
+	
+
+
+<div style="height: 100px;"></div>
+
+
+
+
+<!-- Footer -->
+<nav class="bottom-navbar" style = "margin-top:15px;">
+
+   <div class="navbar-inner">
+	<div class="nav navbar-header">
+		
+		<button type="button" class="btn btn-default navbar-toggle" data-toggle="collapse" data-target="#bottomNavbar">
+		<span class="glyphicon glyphicon-align-justify" style="font-size:30px;" aria-hidden="true"></span>
+		</button>
+		
+	</div>
+		
+		
+	<div class="collapse navbar-collapse " id="bottomNavbar" >
+		<div class="nav navbar-nav" >
+			<button class="btn btn-default bottom-navbar-btn" data-toggle="modal" data-target="#Contact">Contact Us:</button>
+		</div>
+		<div class="nav navbar-nav">
+			<a  id = "show_terms" class="btn btn-default bottom-navbar-btn"  >Terms/Conditions:</a>
+		</div>
+		<div class="nav navbar-nav">
+			<a   id = "show_privacy" class="btn btn-default bottom-navbar-btn"  >Privacy Policy:</a>
+		</div>
+		
+		<div class="nav navbar-nav">
+			<a id = "show_prospects" title="Earn Tasty credits when you invite your friends and favorite restaurants to join Tastes-Good.com"  class="btn btn-default bottom-navbar-btn">Invite a Restaurant!</a>
+		</div>
+		
+	</div><!--/.nav-collapse -->
+
+  </div>
+
+</nav>
+
+
+<div id = "pdf_preview_container">
+	<iframe id="pdf_preview" name="pdf_preview" src="" style="display:none;z-index:1001; position:absolute;width:100%;top:0px;height:100%"></iframe>
+</div>
+<div class="row" id ="pdf_preview_btns" style="display:none;z-index:1002;position:fixed;top:0;width:100%;">
+	<div class="col-xs-3 no-padding">
+	<button id="print_pdf_preview" class="btn-lg btn-block btn btn-default" style="font-family:courier;font-weight:900;font-size:25px;padding:10px;" ><span class="glyphicon glyphicon-print"></span> <span class = "hidden-sm-down"> Print </span></button>
+	</div>
+	<div class="col-xs-3 no-padding">
+	<button id="order_review" class="btn-lg btn-block btn btn-default" style="font-family:courier;font-weight:900;font-size:25px;padding:10px;" ><span class="glyphicon glyphicon-thumbs-up"></span><span class = "hidden-sm-down"> Review </span> </button>
+	</div>
+	<div class="col-xs-3 no-padding">
+	<button id="order_repeat" class="btn-lg btn-block btn btn-default" style="font-family:courier;font-weight:900;font-size:25px;padding:10px;" ><span class="glyphicon glyphicon-refresh"></span><span class = "hidden-sm-down"> Repeat </span> </button>
+	</div>
+	<div class="col-xs-3 no-padding">
+	<button id="hide_pdf_preview" class="btn-lg btn-block btn btn-default" style="font-family:courier;font-weight:900;font-size:25px;padding:10px;" > Back </button>
+	</div>
+</div>
+
+<div class="modal fade" id="User_Orders" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Previous Orders:</h3>
+      </div>
+      <div class="modal-body">
+      	<div class="row btn btn-block btn-primary"><div class="col-xs-2">Order #</div><div class="col-xs-3">Date:</div><div class="col-xs-4">Restaurant:</div><div class="col-xs-3">Total:</div></div>
+     	<div id = "user_orders_list" style="max-height:400px;overflow:auto;"> </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+ </div>
+</div>
+
+
+<div class="modal fade" id="menu_changed" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Past Orders:</h3>
+      </div>
+      <div class="modal-body">
+     	 <div style="max-height:400px;overflow:auto;padding:10px;">Some items on your order have changed or are currently unavailable.  We can recreate parts of your order that match the restaurant's current menu--or we can start from scratch with a new order. </div>
+      </div>
+
+      <div class="modal-footer">
+      	<button type="button" id="new_order" class="btn btn-default" data-dismiss="modal">New Order</button>
+        <button type="button" id="partial_recreate_order" class="btn btn-default" data-dismiss="modal">Remake Order</button>
+      </div>
+    </div>
+ </div>
+</div>
+
+
+<div class="modal fade" id="menu_notchanged" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Success:</h3>
+      </div>
+      <div class="modal-body">
+     	 <div style="max-height:400px;overflow:auto;padding:10px;">We have created a new order from your order history.  Please review the details of your order before proceeding. </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+ </div>
+</div>
+
+
+<div class="modal fade" id="Failure" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Failure:</h3>
+      </div>
+      <div class="modal-body">
+     	 <h3 id = "failedMsg" class = "text-danger"> Whoops!  Something went wrong! </h3>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+ </div>
+</div>
+
+<div class="modal fade" id="toast" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="toast_title" style="font-size:22px;">Success:</h3>
+      </div>
+      <div class="modal-body"> 
+      	<h2 id = "toast_content" style="font-size:18px;"> Thank you for your feedback. <br> We will respond at the earliest opportunity! </h2>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Okay</button>
+      </div>
+    </div>
+ </div>
+</div>
+
+
+<div class="modal fade" id="Contact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Leave a Message:</h3>
+      </div>
+      <div class="modal-body">
+      	<div class = "row no-padding" style="background-color:rgba(255,255,255,.4);">
+			
+			<div class = "col-xs-12" style="margin-top:10px;">
+				<label for="footer_name">Name:</label>
+				<input  class = "form-control form-control-inline" id = "footer_name" type="text" placeholder= "Your Name" >
+				
+				</input>
+			</div>
+			<div class = "col-xs-12" style="margin-top:10px;">
+				<label for="footer_email">Email:</label>
+				<input class = "form-control form-control-inline" id = "footer_email" type="text" placeholder = "email@abc.com" />
+			</div>
+			<div class = "col-xs-12" style="margin-top:10px;">
+				<label for="footer_reason">Contact Reason:</label>
+				<select class ="form-control" id="footer_reason">
+				  <option value="ORDER">Problem with an Order</option>
+				  <option value="BILLING">Billing/Receipts</option>
+				  <option value="TECH">Technical Issue</option>
+				  <option value="FEEDBACK" selected = "selected">Website Feedback</option>
+				  <option value="FRAUD">Report Fraud</option>
+				  <option value="PRIVACY">Our Privacy Policy</option>
+				  <option value="PARTNER">Partnership Inquiry </option>
+				  <option value="OTHER">Other </option>
+				</select>
+			</div>
+			<div class = "col-xs-12" style="margin-top:10px;">
+				<label for="footer_message">Message:</label>
+				<textarea class ="form-control" rows="4" id="footer_message"></textarea>
+			</div>			
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" class="btn-primary btn-block" style="height:34px;width:18%" data-dismiss="modal">back</button>
+        <button type="button" onclick="sendEmail();" class="btn btn-primary btn-block" style="height:34px;width:18%;float:right;">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="userLogin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+		<div class="modal-header">
+			<h3 class= "modal-title">User Login:   </h3>
+			  
+			<button type="button" class="close" onclick="$('#userLogin').modal('hide');"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			
+		</div>
+     
+      	<div class="modal-body">
+      		
+      	
+      		<div id = "main_login">
+			<form id="login" method="post" autocomplete="on"> 
+				<div id="oauth_logins" class = "row" style="display:none; margin:8px;">
+					<div class = "col-xs-6" style="text-align:center;">
+						<div id= "fb_login_button" class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false" onlogin="fb_login();"></div>
+					</div>
+					<div class ="col-xs-6">
+						<div class="g-signin2" data-onsuccess="goog_login" data-theme="dark"></div>
+					</div>
+				</div>
+				
+				<div class = "row">
+					
+					<div class = "col-xs-12 col-sm-6">
+						<label for="userId" style = "display:none">Email Address:</label>
+						<input id="userId" class="form-control" type="text" placeholder="Email Address"> </input>	
+					</div>	
+					<div class = "col-xs-12 col-sm-6">
+						<label for="userPwd" style = "display:none">Password:</label>
+						 <input id="userPwd" class="form-control" required="required" type="password" placeholder="password" ></input>
+					</div>			  
+					<div class = "col-xs-12">
+						<button id = "forget_pwd" type = "button"  class="btn-block btn btn-link"  style = "color: #633E26;">Forgot Password?</button>
+					</div>		
+					<div class = "col-xs-12">
+						<button type="button" id = "new_user"  class="btn-block btn btn-link" style = "color: #633E26;"> (Register New User)</button>
+					</div>
+				</div>
+								
+			</form>
+		</div>
+		
+		<div id = "goog_merge">
+			<div id= "googNew" style="display:none;"> 
+				<h3>User Details:</h3>
+					
+	
+				<div class="row">
+					<label for= "googFName"  style= "line-height:30px" class = "col-xs-2">First Name:</label>
+					<div class = "col-xs-4">
+						<input id="googFName" class="form-control"  type="text" ></input>
+					</div>
+					<label for= "googLName"  style= "line-height:30px" class = "col-xs-2">Last Name:</label>
+					<div class = "col-xs-4">
+						<input id="googLName" class="form-control"  type="text" ></input>
+					</div>
+				</div>	
+				
+				<div id = "newPhone" class="row">
+					<label for= "googPhone"  style= "line-height:30px" class = "col-xs-2">Phone:</label>
+					<div class = "col-xs-10">
+						<input id="googPhone" class="form-control" type="text" > </input>
+					</div>
+				</div>
+				
+				<h3>Password: </h3>
+				<div class="row">
+					<div class = "col-sm-2 col-xs-4">Password:</div>
+					<div class = "col-sm-4 col-xs-8">
+						<input id="googUserPwd" class="form-control"  type="password" ></input>
+					</div>
+					<div class = "col-sm-2 col-xs-4">Confirm:</div>
+					<div class = "col-sm-4 col-xs-8">
+						<input id="googUserPwdConfirm" class="form-control"  type="password" ></input>
+					</div>
+				</div>
+				
+				<div class = "row">
+					<div class = "col-xs-6">
+						<button onclick = "$('#googNew').hide();$('#main_login').show();$('#existing_user_btn').show();" class = "btn-block btn btn-primary">Back</button>
+					</div>
+					<div class = "col-xs-6">
+						<button id="googSubmit" class = "btn-block btn btn-primary">Submit</button>
+					</div>
+								
+				
+				</div>
+				
+			
+			</div>
+			<div id = "googPwd" style="display:none">
+				<div class = "row">
+					<label for= "goog_pwd"  style= "line-height:30px" class="col-xs-6">Tastes-Good Password: </label>
+					<div class="col-xs-6"><input id="goog_pwd" class="form-control"  type="password" ></input></div>
+					<div class = "col-xs-12">
+						<button onclick="$('#googPwd').hide();$('#main_login').show();$('#existing_user_btn').show();$('#forget_pwd').trigger('click');" type = "button"  class="btn-block btn btn-link"  style = "color: #633E26;">Forgot Password?</button>
+					</div>	
+				</div>	
+				
+				<div class = "row">
+					<div class = "col-xs-6">
+						<button onclick = "$('#googPwd').hide();$('#main_login').show();$('#existing_user_btn').show();" class = "btn-block btn btn-primary">Back</button>
+					</div>
+					<div class = "col-xs-6">
+						<button id="googPwd_submit" class = "btn-block btn btn-primary">Submit</button>
+					</div>
+								
+				
+				</div>
+			</div>
+		
+		</div>
+		<div id = "fb_merge" >
+			<div id="mergeEmail"  style = "display:none">
+				
+				<strong>Email Address: </strong>
+				<div class = "row">
+				<div class = "col-xs-12"><input id="merge_email" placeholder = "email@example.com"  class="form-control" type="text" > </input></div>
+				</div>
+				<div class = "row">
+				<div class = "col-xs-6">
+					<button onclick = "$('#mergeEmail').hide();$('#main_login').show();$('#existing_user_btn').show();" class = "btn-block btn btn-primary">Back</button>
+				</div>
+				<div class = "col-xs-6">
+					<button id="merge_email_submit" class = "btn-block btn btn-primary">Submit</button>
+				</div>
+				</div>
+			</div>
+			<div id="mergePassword" style = "display:none">
+				<strong>This email is registered.  Confirm password to connect with <span id="mergeType">Facebook</span>.</strong>
+				<div class = "row">
+					<label for= "mergePwd"  style= "line-height:30px" class="col-xs-6">Password: </label>
+					<div class="col-xs-6"><input id="mergePwd" class="form-control"  type="password" ></input></div>
+				</div>	
+				<div class = "row">
+					<div class = "col-xs-6">
+						<button onclick = "$('#mergePassword').hide();$('#main_login').show();$('#existing_user_btn').show();" class = "btn-block btn btn-primary">Back</button>
+					</div>
+					<div class = "col-xs-6">
+						<button id="mergePwd_submit" class = "btn-block btn btn-primary">Submit</button>
+					</div>
+								
+				
+				</div>
+			</div>
+			<div id="mergeDetails" style = "display:none">
+				<h3>User Details:</h3>
+				
+
+				<div class="row">
+					<label for= "mergeFName"  style= "line-height:30px" class = "col-xs-2">First Name:</label>
+					<div class = "col-xs-4">
+						<input id="mergeFName" class="form-control"  type="text" ></input>
+					</div>
+					<label for= "mergeLName"  style= "line-height:30px" class = "col-xs-2">Last Name:</label>
+					<div class = "col-xs-4">
+						<input id="mergeLName" class="form-control"  type="text" ></input>
+					</div>
+				</div>	
+				
+				<div id = "newPhone" class="row">
+					<label for= "mergePhone"  style= "line-height:30px" class = "col-xs-2">Phone:</label>
+					<div class = "col-xs-10">
+						<input id="mergePhone" class="form-control" type="text" > </input>
+					</div>
+				</div>
+				
+								
+				<div class = "row">
+					<div class = "col-xs-6">
+						<button onclick = "$('#mergeDetails').hide();$('#main_login').show();$('#existing_user_btn').show();" class = "btn-block btn btn-primary">Back</button>
+					</div>
+					<div class = "col-xs-6">
+						<button id="mergeSubmit" class = "btn-block btn btn-primary">Submit</button>
+					</div>
+								
+				
+				</div>
+			</div>
+			
+		
+		
+		
+		</div>
+			
+			<div id="forgotPwd" role = "document">
+				<div class="modal-content">
+									 
+					<div class="modal-body">
+						<div class = "row">
+							<div class = "col-xs-12">
+								<form method="post" autocomplete="on"> 
+									<h3>Password Recovery: </h3>
+									<div class="row">
+										<div class = "col-xs-4"><label for="email_recovery">Email Address:</label></div>
+										<div class = "col-xs-8">
+											<input id="email_recovery" class="form-control"  type="text" ></input>
+										</div>
+										
+									</div>	
+									
+									<h2 class = "bg-danger" style="padding-top:5px;padding-bottom:5px;padding-left:10px;border-radius:6px;" id="email_noexist">Account does not exist.  Check email address.</h2>
+									<h2 class = "bg-success" style="padding-top:5px;padding-bottom:5px;padding-left:10px;border-radius:6px;" id="email_sent">Check your inbox for password recovery email.</h2>
+								</form>
+							</div>
+						</div>			
+					</div>	
+				
+				  <div class="modal-footer">
+						<div class = "row" >	
+							<div class = "col-xs-6">
+								<button id = "forgot_pwd_Cancel"  class = "btn-block btn btn-primary">Cancel</button>
+							</div>
+							<div class = "col-xs-6">
+								<button id="submit_forgot_pwd" class = "btn-block btn btn-primary">Recover Password</button>
+							</div>
+							
+						</div>
+					</div>    
+				</div>
+			</div>
+			<div id="userNew" role="document">
+				<div class="modal-content">
+									 
+					<div class="modal-body">
+						<div class = "row">
+							<div class = "col-xs-12">
+								<form method="post" autocomplete="on"> 
+									<h3> User Details: </h3>
+									<div class="row">
+										<div class = "col-xs-2">First Name:</div>
+										<div class = "col-xs-4">
+											<input id="newUserFName" class="form-control"  type="text" ></input>
+										</div>
+										<div class = "col-xs-2">Last Name:</div>
+										<div class = "col-xs-4">
+											<input id="newUserLName" class="form-control"  type="text" ></input>
+										</div>
+									</div>	
+									
+									<div id = "newPhone" class="row">
+										<div class = "col-xs-2">Phone:</div>
+										<div class = "col-xs-10">
+											<input id="newUserPhone" class="form-control" type="text" > </input>
+										</div>
+									</div>
+									
+									<div class="row">
+										<div class = "col-xs-2">Email:</div>
+										<div class = "col-xs-10">
+											<input id="newUserEmail" class="form-control" type="text" > </input>
+										</div>
+									
+									</div>
+									<h2 class = "bg-danger" style="padding-top:5px;padding-bottom:5px;padding-left:10px;border-radius:6px;" id="invalid_email">This email belongs to another account.</h2>
+									
+									<br><br>
+									
+									<div id= "new_user_pwd">
+										<h3>Password </h3>
+										<div class="row">
+											<div class = "col-sm-2 col-xs-4">Password:</div>
+											<div class = "col-sm-4 col-xs-8">
+												<input id="newUserPwd" class="form-control"  type="password" ></input>
+											</div>
+											<div class = "col-sm-2 col-xs-4">Confirm:</div>
+											<div class = "col-sm-4 col-xs-8">
+												<input id="newUserPwdConfirm" class="form-control"  type="password" ></input>
+											</div>
+										</div>
+										<h2 class = "bg-danger" style="padding-top:5px;padding-bottom:5px;padding-left:10px;border-radius:6px;" id="short_password">
+											Password must be between 7 and 32 characters long.
+										</h2>
+										
+									
+									</div>
+									
+									
+									
+									
+									<br>
+									<h2> Please indicate that you have accept our website's Terms &amp Conditions and Privacy Policy: </h2>
+									<div class = "row">
+										<div class = "col-xs-2"><input type="checkbox" name="legal" id="read_terms"/></div>
+										<div class = "col-xs-4">
+											<label for "read_terms" title="check to indicate that you have read and accept the website terms and conditions"><a target="_blank" href="/termsconditions.php">Terms &amp Conditions </a></label>
+										</div>
+										<div class = "col-xs-2"><input type="checkbox"  name="legal" id="read_privacy"/></div>
+										<div class = "col-xs-4">
+											<label for "read_privacy" title="check to indicate that you have read and accept the website's privacy policy"><a target="_blank" href="/Privacy.php">Privacy Policy</a></label>
+										</div>
+									
+									</div>
+									
+									
+								</form>
+							</div>
+						</div>			
+					</div>	
+				
+				  <div class="modal-footer">
+						<div class = "row">	
+							<div class = "col-xs-6">
+								<button id = "new_User_Cancel" class = "btn-block btn btn-primary">Cancel</button>
+							</div>
+							<div class = "col-xs-6">
+								<button id="submit_newUser" class = "btn-block btn btn-primary disabled" disabled="disabled">Create User</button>
+							</div>
+							
+						</div>
+					</div>    
+				</div>
+			  </div>
+			
+						
+				
+			
+			
+		</div>	
+	
+      <div class="modal-footer">
+			<div class = "row"  id = "existing_user_btn">	
+				<div class = "col-xs-6">
+					<button onclick = "$('#userLogin').modal('hide');" class = "btn-block btn btn-primary">Back</button>
+				</div>
+				<div class = "col-xs-6">
+					<button id="submit_login" class = "btn-block btn btn-primary">Login</button>
+				</div>
+				
+			</div>
+			
+		</div>    
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="About" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Our Service:</h3>
+      </div>
+      <div class="modal-body">
+     	<h2>1. What we do: </h2>
+     	We are an online platform offering restaurants in Canada an affordable means to promote their menus online
+     	<h2>2. Our Mission: </h2>
+     	We believe in simplicity.  We are not concerned with too much glitz and flair.
+     	Our goal is to give restaurants the tools they need to overcome the barriers selling their products online. 
+     	<h2>3. A Strong Database Backend </h2>
+     	Menu's can get pretty complicated.  Items can have options can have sub-options our unique integration handles this tree structure seemlessly so that restaurants can mimic the order-flow that occurs in the restaurant.
+     	<h2>4. Payment Processing</h2>
+     	Accepting credit cards online is a daunting task for an independent restaurants and can create additional liability.  Our goal is to offer restaurant partners online payment processing as soon as possible.
+     	     	
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="order_success" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class= "modal-title" style="font-size:25px;">Success:</h3>
+          
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+        	<img src="img/thumbs_up.jpg" style ="height:100px;margin:5px;"/>
+			<strong style="font-size:20px; ;">Order sent to <span name="rest_title"></span> </strong>
+		
+	  </div>
+      <div class="modal-footer">
+			<button data-dismiss="modal" aria-label="Close" class = "btn-block btn btn-primary" style="width:33%;float:right">Back</button>
+				
+			
+	  </div>    
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="order_error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class= "modal-title" style="font-size:25px;">Whoops:</h3>
+          
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+        	<img src="img/thumbs_down.jpg" style ="height:100px;margin:5px;"/>
+			<strong style="font-size:20px;"> We were unable to process the order. </strong>
+		
+	  </div>
+      <div class="modal-footer">
+			<button data-dismiss="modal" aria-label="Close" class = "btn-block btn btn-primary" style="width:33%;float:right">Back</button>
+				
+			
+	  </div>    
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="card_error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class= "modal-title" style="font-size:25px;">Whoops:</h3>
+          
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+        	<img src="img/thumbs_down.jpg" style ="height:100px;margin:5px;"/>
+			<strong style="font-size:20px;"> There was a problem processing your credit card. </strong>
+		
+	  </div>
+      <div class="modal-footer">
+			<button data-dismiss="modal" aria-label="Close" class = "btn-block btn btn-primary" style="width:33%;float:right">Back</button>
+				
+			
+	  </div>    
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="rest_closed" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class= "modal-title">Restaurant is Closed:</h3>
+          
+      	<button type="button" onclick="$('#rest_closed').modal('hide')" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+        	<h2> The restaurant is not able to receive your orders at the moment.  You may if you wish examine the menu and you are welcome to contact the restaurant by phone: </h2>  
+			<h2> <?php echo $a->phone ?> </h2>			
+			
+		
+	  </div>
+      <div class="modal-footer">
+			<button onclick="$('#rest_closed').modal('hide')" class = "btn-block btn btn-primary" style="width:33%;float:right">Back</button>
+				
+			
+	  </div>    
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="orderDetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+		<div class="modal-header">
+			<h3 class= "modal-title">Customer Information:</h3>
+			  
+			<button type="button" class="close" onclick="$('#orderDetails').modal('hide');"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			
+		</div>
+     
+      	<div class="modal-body">
+      			<div class="row">
+      				<div class = "col-xs-12"><h2>Name: <span id="Cust_name"></span></div>
+      				<div class = "col-xs-12"><h2>Email: <span id="Cust_email"></span></div>
+      				<div class = "col-xs-12"><h2>Phone: <span id="Cust_phone"></span></div>
+      				<div class = "col-xs-6"><button id="change_user" class="btn btn-block btn-default">Change User</button></div>
+      				
+      			
+      			</div>
+			<div class="row">
+				<div class = "col-xs-12"><h3>Pickup or Delivery?</h3></div>					
+				<div class=" col-xs-2">
+					<input id="order_Pickup" checked="checked" name="deliveryOption" class="form-control no-padding" type="radio" style="height:20px;width:20px" value="pickup">
+				</div>
+				<div class=" col-xs-3 no-padding" style="line-height:25px;vertical-align: middle;display: inline-block;"><label for="order_Pickup">Pick-Up: </label></div>
+				
+				
+				<div class="col-xs-2">
+					<input id="order_Delivery" name="deliveryOption" class="form-control" type="radio" style="height:20px;width:20px" value="delivery">
+				</div>
+				<div class="col-xs-5 no-padding" style="line-height:25px;vertical-align: middle;display: inline-block;"><label for="order_Delivery">Delivery: </label> </div>
+			</div>
+			<div class="row" id="delivery_address">
+				<div class="col-xs-12"><h3>Delivery Address: </h3></div>
+				<div class="col-xs-12">
+					<div id="order_AddressList" class="list-group">
+														
+					</div>
+					<div class="row" id="delivery_address_new">
+						<div class="col-xs-12"><h3>New Address Details:</h3></div>
+													
+						<div class="col-xs-2" style="line-height:40px;vertical-align: middle;display: inline-block;"> Address:</div>
+						<div class="col-xs-10">
+							<input id="order_newAddress" class="form-control" type="text" placeholder="Enter a Location"> 
+						</div>
+						<div class="col-xs-10 col-xs-offset-2">  (Example:  123 Sesame St., Toronto, Ontario) </div>
+						<div class="col-xs-1 col-xs-offset-1">
+							<input type="radio" checked="checked" class="form-control" name="addressType" value="house" id="addressHouse">  
+						</div>
+						<div class="col-xs-3 " style="line-height:40px;vertical-align: middle;display: inline-block;">House: </div>
+						
+						<div class="col-xs-1 col-xs-offset-1">
+							<input type="radio" class="form-control" name="addressType" value="appt" id="addressHouse">  
+						</div>
+						<div class="col-xs-5" style="line-height:40px;vertical-align: middle;display: inline-block;">Apartment: </div>
+						<div class="col-xs-10 col-xs-offset-2">Select if dwelling is single or multiple residence.</div>
+					
+						<div class="col-xs-12" id="appt_details">
+							<div class="row">
+								<div class="col-xs-2" style="line-height:40px;vertical-align: middle;display: inline-block;">Appt:</div>
+								<div class="col-xs-4"> <input type="text" id="apptNumber" class="form-control" placeholder="###"> </div>
+								<div class="col-xs-2" style="line-height:40px;vertical-align: middle;display: inline-block;">Buzz:</div>
+								<div class="col-xs-4"><input type="text" id="apptBuzz" class="form-control" placeholder="###"> </div>
+							</div>
+						</div>
+						<div class="col-xs-12" style="line-height:40px;vertical-align: middle;display: inline-block;"> Instruction for Driver:</div>
+						
+						<div class="col-xs-12">
+							<input id="addressComments" class="form-control" type="text" placeholder="Instructions for Driver"> 
+						</div>
+							
+							
+					</div>
+					
+					<div id="delivery_address_buttons">
+							<button type="button" class="btn btn-block" id="newAddress">++ Add Address</button>			
+							<button type="button" class="btn btn-block" id="saveAddress">Save Address</button>
+							<button type="button" class="btn btn-block" id="newAddress_Cancel">Back</button>
+							<br><br>
+					</div>	
+					<div class = "row" id="driver_tip">
+						<div class = "col-xs-12"><h3>Driver Tip:</h3></div>
+						<div class = "col-xs-12"><label for="deliveryTip" style="display:none;">Tip the Driver?</label><input class="form-control" id= "deliveryTip" type = "text" placeholder = "$0.00"></input></div>
+						
+						<div class = "col-xs-3 ">
+						<input name="deliveryTip"  id= "deliveryTip0" value="0.00" style="height:20px;width:20px" type = "radio"></input><label for="deliveryTip0">No Tip</label>
+						</div>
+						<div class = "col-xs-3 ">
+						<input name="deliveryTip" checked = "checked" id= "deliveryTip5" style="height:20px;width:20px" value="0.05" type = "radio"></input><label for="deliveryTip5">5 %</label>
+						</div>
+						<div class = "col-xs-3 ">
+						<input name="deliveryTip" checked = "checked" id= "deliveryTip8" style="height:20px;width:20px" value="0.08" type = "radio"></input><label for="deliveryTip8">8 %</label>
+						</div>
+						<div class = "col-xs-3 ">
+						<input name="deliveryTip" checked = "checked" id= "deliveryTip12" style="height:20px;width:20px" value="0.12" type = "radio"></input><label for="deliveryTip12">12 %</label>
+						</div>
+				
+				
+					</div>
+				</div>
+			</div>			  
+					
+			<div class = "row">
+				<div class="col-xs-12"><h3>Requested Time:</h3></div>
+				
+				<div class = "col-xs-6">
+					<input id= "deliveryDate" type = "text"></input>
+				</div>
+				<div class = "col-xs-6">
+					<input class="timepicker" name="timepicker" id= "deliveryTime" type = "text"></input>
+				</div>
+			</div>
+			<br>
+			
+			
+		</div>  
+			
+      <div class="modal-footer">
+			<div class = "row">	
+				<div class = "col-xs-6">
+					<button onclick="$('#orderDetails').modal('hide');" class = "btn-block btn btn-primary">Back</button>
+				</div>
+				<div class = "col-xs-6">
+					<button id="confirm_Order" class = "btn-block btn btn-primary">Continue</button>
+				</div>
+				
+			</div>
+		</div>    
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="orderConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class= "modal-title">Review Your Order: </h3>
+          
+      	<button type="button" class="close" onclick="$('#orderConfirm').modal('hide')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+     		<div class = "row" id = "rest_info">
+     			<div class = "col-xs-12" id="rest_active_warning"></div>
+     			<div class = "col-xs-12"><h3>Restaurant: <span name = "rest_title"  style="color:rgba(30,30,70,1);"></span></h3></div>
+     			<div class = "col-xs-12"><h2 id="confirm_address"></h2></div>
+     			
+			</div>
+			<div class = "row" id = "user_info">
+				<div class = "col-xs-12"><h3 style="width:100%;">Customer: <span id="cust_name" style="color:rgba(30,30,70,1);"></span></h3></div>
+				<div class = "col-xs-6"><h2>Email: <span id = "cust_email"></span></h2></div>
+				<div class = "col-xs-6"><h2>Phone: <span id = "cust_phone"></span></h2></div>
+				<div id= "cust_address_div" class = "col-xs-12"><h2>Address: <span id = "cust_address"></span></h2></div>
+			</div>
+			<div class = "row">
+				<div  id = "delivery_pref" class = "col-xs-12">
+				</div>
+			</div>
+			<br><hr class="hr1"><br>
+			<div class = "row" id = "order_info">
+			</div>
+			<div class = "row">			
+				<ul class = "list-group col-xs-12" id = "preview_totals">
+					<li class= "list-group-item">Sub-Total: <span class = "badge" id="confirm_subTotal">$0.00</span> </li>
+					<li class= "list-group-item" style = "display:none;">Discount: <span class = "badge" id="confirm_discount">$0.00</span> </li>
+					<li class= "list-group-item" id="confirm_delivery_div">Delivery Charge: <span class = "badge" id="confirm_delivery">$0.00</span> </li>
+					<li class= "list-group-item" id="confirm_tax_div">Tax (13%): <span class = "badge" id="confirm_tax">$0.00</span> </li>
+					<li class= "list-group-item" id="confirm_delivery_tip_div">Tip The Driver: <span class = "badge" id="confirm_tip">$0.00</span> </li>
+					<br>
+					<li class= "list-group-item"> <h3 style="margin-top:0;">  Total:  </h3 ><h3 style="float:right;" id="confirm_total">$0.00</h3></li>
+									
+				</ul>
+			</div>
+			<div class="row">
+				<div class= "col-xs-12">
+					<label for="order_comments"><h3>Message to Restaurant:</h3></label>
+					<br>
+					<textarea maxlength="350" id = "order_comments" class = "form-control" rows="3"></textarea>
+				</div>
+			</div>
+			<div class = "row" id = "payment_method">
+				<div class = "col-xs-12"><h3>Payment Method: </h3></div>
+				<div class = " col-xs-6">
+					<label class="radio-inline"><input id="payment_Offline" checked = "checked" name="payment_type" type="radio" value = "offline" >Cash Payment</label>
+					
+				</div>
+				
+				<div class = " col-xs-6">
+					<label class="radio-inline"><input id="payment_Online" checked = "checked" name="payment_type" type="radio" value = "online" >Online Payment</label>
+				</div>
+				
+			
+			</div>
+			<div id = "online_payments" style="position:relative; margin-top:30px;padding:10px;padding-top:30px;border:solid;border-width:0.8px;border-color:darkgrey"">
+				<a href="https://www.braintreegateway.com/merchants/<?php echo $BTproduct->merchant; ?>/verified" target="_blank" style="position:absolute;top:-20px;left:10px;">
+	    				<img src="img/braintree-badge-wide-dark.png" width="280px" height ="44px" border="0"/>
+	   			</a>
+				<form  id = "braintreeForm" action="checkout.php">
+					<div id="payment_method_div" style="display:none;">
+						<div style = "font-family:'Courier New';font-size:18px;margin-top:10px;margin-bottom:10px;" >Payment method encrypted by BRAINTREE.</div>
+						<button id = "change_payment" class = "braintree-btn btn-block">Change Payment Method</button>
+						
+						
+					</div>
+					
+					<div id="credit_div">					
+						
+						<div class = "row" style = " text-align:left;width:100%;line-height:35px;vertical-align: middle;display: inline-block;">
+							
+							<div class = "col-xs-12">
+								<label for ="card-number" >Credit Card: </label>
+								<div id = "card-number" class = "form-control" style="display:inline-block;width:auto;margin-left:20px;" autocomplete="off" type="text"></div>
+							</div>
+						</div>
+					
+						<div class = "row" style = "text-align:left;width:100%;line-height:35px;vertical-align: middle;display: inline-block;">
+							<div class =  "col-xs-2 ">
+								<label for="expiration-month" >Exp: </label>
+							</div>
+							<div class =  "col-xs-2 ">
+								<div id = "expiration-month"  autocomplete="off" class = "form-control" type = "text" style="min-width: 30px;" placeholder = "MM"></div>
+							</div>
+							<div class =  "col-xs-2">
+								<div id = "expiration-year"  autocomplete="off" class = "form-control" type = "text" style="min-width: 30px;" placeholder = "YY"></div>
+								<span style = "position:absolute;top:-2px; font-size:20px; left:-2px;">/</span>
+							</div>
+							
+							
+							<div class = "col-xs-2 ">
+								<label for="cvv"> CVV: </label>
+							</div>
+							<div class = "col-xs-4">
+								<div id = "cvv"  autocomplete="off" type = "text" class = "form-control" type = "text" placeholder = "CVV"></div>
+							</div>
+							
+							<div class = "col-xs-8">
+								<input type="submit" class = "braintree-btn btn-block" id="authorize_credit" value="Pay with Visa" />
+							</div>
+							<div class = "col-xs-4">
+								<div id = "paypal_div">
+								<div id = "paypal_container"></div>
+								</div>
+							</div>
+						</div>
+						<input type = "hidden" id="payment_nonce"/>
+						
+					
+					</div>
+					
+				</form>
+			</div>
+		
+	  </div>
+      <div class="modal-footer">
+      			
+			
+			<div class = "row" style = "margin-top:15px; margin-left:15px;">
+			<div class="col-xs-2">
+			<input type="checkbox" class="form-control" id="terms_conditions"  style="height:20px;"/>
+			</div>
+			<div class="col-xs-10">
+			<label for="terms_conditions" style="text-align:left;">By clicking "Send Order" I am authorizing payment of the displayed amount and indicating that I have read and understand the website <a target = "_blank" href="./termsconditions.php"> terms and conditions </a></label>
+			</div>
+			</div>
+			
+			<div class= "row" id = "offline_buttons" style = " margin-top:20px;text-align:left;width:100%;line-height:35px;vertical-align: middle;display: inline-block;">
+				<div class = "col-xs-6">
+					<button class="btn btn-block btn-primary" id = "orderProcess" type="button">Send Order</button>
+				</div>
+				<div class = "col-xs-6">
+					<button class="btn btn-block btn-primary" onclick = "$('#orderConfirm').modal('hide');"  id = "orderBack"  type="button">Cancel</button>
+				</div>
+			</div>
+      </div>    
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ExtraModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class= "modal-title" style="width:70%;">Item: <span id="parentItem"  style="color:rgba(30,30,70,1);">The Item Name</span></h3>
+          
+      	<button type="button" class="close" onclick="$('#ExtraModal').modal('hide')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+	<div class="modal-body">
+		<div class="modal-content">
+			<img src ="img/avatar1.jpg" />
+			<h3 id="preview_question" class="modal-header">
+			<div id = "extraQuestion"> The Question goes here. </div>
+			</h3>
+			<div  class="modal-body">
+				<div id="extraSelect" class = "hidden">
+				
+				</div>
+				<div id = "extraCheck" style=" padding:5px; margin:auto;" class = "hidden">
+				
+				</div>  				
+			</div>
+			
+			
+		</div>
+	</div>
+      <div class="modal-footer">
+			<button class="btn btn-primary" id = "extraContinue" type="button">Continue </button>
+			<button class="btn btn-primary" id = "extraCancel" onclick="$('#ExtraModal').modal('hide')" type="button">Cancel</button>
+      </div>    
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="xs_preview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class= "modal-title">Order Details: </h3>
+          
+      	<button type="button" class="close" onclick="$('#xs_preview').modal('hide');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+	<div class="modal-body">
+		<div class="modal-content">
+			<div id = "xs_preview_body" class="modal-body">
+							
+			</div>
+			<hr>
+			<div id = "xs_preview_totals" class="modal-body" >
+			
+			</div>
+			
+		</div>	
+	</div>
+      <div class="modal-footer">
+			<button class="btn btn-primary" id = "xs_preview_continue" onclick="$('#xs_preview').modal('hide');initDetails();" type="button">Checkout</button>
+			<button class="btn btn-primary" onclick="$('#xs_preview').modal('hide')" type="button">Cancel</button>
+      </div>    
+    </div>
+  </div>
+</div>
+	
+	
+<div class="modal fade" id="message_recieved" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Success:</h3>
+      </div>
+      <div class="modal-body">
+      	<h2>Thank you for giving us feedback!</h2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+	
+
+<div class="modal fade" id="my_prospect"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel">	
+	<div name = "single_pane_layout"  class = "modal-dialog"  style = "background-color:rgb(172, 232, 213);  border-style: solid; border-color: darkgrey; border-width:0.8px; border-radius:6px; width:95%;max-width:900px;margin:auto; margin-top:10px; ">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><br>
+			<div class="row no-padding">
+					<div class= "col-xs-8 no-padding">
+						<button class = "btn-lg btn btn-info btn-block" >Your Tasty Credit:</button>
+					</div>
+					<div class= "col-xs-4 no-padding">
+						<button id="referal_user_credit" class = "btn-lg btn btn-default btn-block" >$0.00</button>
+					</div>
+			</div>
+		</div>
+		
+			
+		<div class="modal-content" style="margin-left:15px; margin-right:15px;">
+			<div style="height:auto; background-color:rgb(255, 255, 255)">
+			<button id="new_prospect" title="When the restaurant joins Tastes-Good.com for the next 4 years you will receive 20% of the commissions they generate as credits to your account"  class = "btn-lg btn btn-info btn-block" >Invite a Restaurant</button>
+				
+				
+			<div id = "new_restaurant_details" style="display:none" class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title" id="myModalLabel" style="font-size:22px;">New Restaurant:  <span style="color:#633E26" id="prospect_title"></span></h3>
+			  </div>
+			  <div class="modal-body"> 
+				  <h2 style="font-size:20px; margin:10px;">1. Tell the restaurant owner about Tastes-Good.com</h2>
+				  <h2 style="font-size:20px; margin:10px;">2. Submit restaurant details: </h2>
+					<input id="new_title" class= "form-control input-lg" placeholder="Business Name" />
+					<input id="new_address" class= "form-control input-lg" placeholder="Restaurant Address" />
+					<input id="new_phone" class= "form-control input-lg" placeholder="111-111-1111" />
+					<input id="new_email" class= "form-control input-lg" placeholder="email@example.com" />
+				  
+				  <h2 style="font-size:20px; margin:10px;">3. Restaurant will be reviewed before sending email invitation. You'll get an email when the restaurant joins Tastes-Good.com. </h2>
+			  </div>
+		
+			  <div class="modal-footer">
+				<button class= "btn btn-info btn-lg" id="prospect_new">Send Invitation</button>
+				<button type="button" class="btn btn-lg btn-default" data-dismiss="modal">Cancel</button>
+			  </div>
+			</div>
+				<div class="row no-padding">
+					<div class= "col-xs-3 no-padding">
+					<button class = "btn btn-default btn-block">Name: </button>
+					</div>
+					<div class ="col-xs-3 no-padding">
+					<button class = "btn btn-default btn-block">Sales: </button>
+					</div>
+					<div class = "col-xs-3 no-padding">
+					<button class = "btn btn-default btn-block">Expires: </button>
+					</div>
+					<div class = "col-xs-3 no-padding">
+					<button class = "btn btn-default btn-block">Credit Earned: </button>
+					</div>
+				</div>			
+				<ul id = "active_restaurants" class="list-group no-padding">
+				
+				</ul>
+				<div class="row no-padding">
+					<div class= "col-xs-6 no-padding">
+						<button class = "btn btn-default btn-block">Restaurant: </button>
+					</div>
+					<div class= "col-xs-6 no-padding">
+						<button class = "btn btn-default btn-block">Email: </button>
+					</div>
+								
+				</div>
+				
+				<ul id = "prospect_restaurants" class="list-group no-padding">
+				
+				</ul>
+				
+			</div>
+		</div>
+		
+		<div class="modal-content"  style="margin:15px;">
+			<button id="new_friend" title="When a friend joins Tastes-Good.com for the next 4 years you will receive 20% of the commissions they generate as credits to your account" class = "btn-lg btn btn-info btn-block" >Invite Friends</button>
+			<div class="input-group" style = "margin:10px;">
+				<div class="input-group-addon"><i id = "share_link_click" class="glyphicon glyphicon-link"></i></div>
+				<input id="share_link" type="text" class="form-control" readonly> </input>
+				
+			</div>
+			<div class="row no-padding">
+				<div class= "col-xs-3 no-padding">
+				<button class = "btn btn-default btn-block">Customer Name: </button>
+				</div>
+				<div class ="col-xs-3 no-padding">
+				<button class = "btn btn-default btn-block">Sales: </button>
+				</div>
+				<div class = "col-xs-3 no-padding">
+				<button class = "btn btn-default btn-block">Expires: </button>
+				</div>
+				<div class = "col-xs-3 no-padding">
+				<button class = "btn btn-default btn-block">Credit: </button>
+				</div>
+			</div>
+			<ul id = "active_customers" class="list-group no-padding">
+			
+			</ul>				
+		
+		</div>
+		<div class="modal-footer">
+        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+	</div>
+</div>	
+	
+
+</body>
+</html>  
+ 
+
+

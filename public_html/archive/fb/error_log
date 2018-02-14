@@ -1,0 +1,17 @@
+[07-Feb-2017 12:27:47 America/Denver] PHP Fatal error:  Uncaught exception 'Facebook\Exceptions\FacebookSDKException' with message 'Sessions are not active. Please make sure session_start() is at the top of your script.' in /home1/tastesgo/public_html/fb/php-graph-sdk-5.0.0/src/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php:50
+Stack trace:
+#0 /home1/tastesgo/public_html/fb/php-graph-sdk-5.0.0/src/Facebook/Helpers/FacebookRedirectLoginHelper.php(80): Facebook\PersistentData\FacebookSessionPersistentDataHandler->__construct()
+#1 /home1/tastesgo/public_html/fb/php-graph-sdk-5.0.0/src/Facebook/Facebook.php(323): Facebook\Helpers\FacebookRedirectLoginHelper->__construct(Object(Facebook\Authentication\OAuth2Client), NULL, NULL, NULL)
+#2 /home1/tastesgo/public_html/fb/login.php(10): Facebook\Facebook->getRedirectLoginHelper()
+#3 {main}
+  thrown in /home1/tastesgo/public_html/fb/php-graph-sdk-5.0.0/src/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php on line 50
+[07-Feb-2017 20:09:12 UTC] PHP Fatal error:  Uncaught exception 'Facebook\Exceptions\FacebookSDKException' with message 'Required "app_id" key not supplied in config and could not find fallback environment variable "FACEBOOK_APP_ID"' in /home1/tastesgo/public_html/fb/php-graph-sdk-5.0.0/src/Facebook/Facebook.php:133
+Stack trace:
+#0 /home1/tastesgo/public_html/fb/fb-callback.php(6): Facebook\Facebook->__construct(Array)
+#1 {main}
+  thrown in /home1/tastesgo/public_html/fb/php-graph-sdk-5.0.0/src/Facebook/Facebook.php on line 133
+[07-Feb-2017 13:51:40 America/Denver] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO), expecting ',' or ';' in /home1/tastesgo/public_html/fb/fb-callback.php on line 44
+[07-Feb-2017 13:51:42 America/Denver] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO), expecting ',' or ';' in /home1/tastesgo/public_html/fb/fb-callback.php on line 44
+[07-Feb-2017 13:51:45 America/Denver] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO), expecting ',' or ';' in /home1/tastesgo/public_html/fb/fb-callback.php on line 44
+[07-Feb-2017 14:00:42 America/Denver] PHP Parse error:  syntax error, unexpected ')' in /home1/tastesgo/public_html/fb/fb-callback.php on line 50
+[07-Feb-2017 14:00:46 America/Denver] PHP Parse error:  syntax error, unexpected ')' in /home1/tastesgo/public_html/fb/fb-callback.php on line 50

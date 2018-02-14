@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width"/>
+<title>Modular Template Patterns</title>
+
+<style type="text/css">
+/*////// RESET STYLES //////*/
+body, #bodyTable, #bodyCell{height:100% !important; margin:0; padding:0; width:100% !important;}
+table{border-collapse:collapse;}
+img, a img{border:0; outline:none; text-decoration:none;}
+h1, h2, h3, h4, h5, h6{margin:0; padding:0;}
+p{margin: 1em 0;}
+/*////// CLIENT-SPECIFIC STYLES //////*/
+.ReadMsgBody{width:100%;} .ExternalClass{width:100%;} /* Force Hotmail/Outlook.com to display emails at full width. */
+.ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div{line-height:100%;} /* Force Hotmail/Outlook.com to display line heights normally. */
+table, td{mso-table-lspace:0pt; mso-table-rspace:0pt;} /* Remove spacing between tables in Outlook 2007 and up. */
+#outlook a{padding:0;} /* Force Outlook 2007 and up to provide a "view in browser" message. */
+img{-ms-interpolation-mode: bicubic;} /* Force IE to smoothly render resized images. */
+body, table, td, p, a, li, blockquote{-ms-text-size-adjust:100%; -webkit-text-size-adjust:100%;} /* Prevent Windows- and Webkit-based mobile platforms from changing declared text sizes. */
+/*////// FRAMEWORK STYLES //////*/
+.flexibleContainerCell{padding-top:20px; padding-Right:20px; padding-Left:20px;}
+.flexibleImage{height:auto;}
+.bottomShim{padding-bottom:20px;}
+.imageContent, .imageContentLast{padding-bottom:20px;}
+.nestedContainerCell{padding-top:20px; padding-Right:20px; padding-Left:20px;}
+/*////// GENERAL STYLES //////*/
+body, #bodyTable{background-color:#F5F5F5;}
+#bodyCell{padding-top:40px; padding-bottom:40px;}
+#emailBody{background-color:#FFFFFF; border:1px solid #DDDDDD; border-collapse:separate; border-radius:4px;}
+h1, h2, h3, h4, h5, h6{color:#202020; font-family:Helvetica; font-size:20px; line-height:125%; text-align:Left;}
+.textContent, .textContentLast{color:#404040; font-family:Helvetica; font-size:16px; line-height:125%; text-align:Left; padding-bottom:20px;}
+.textContent a, .textContentLast a{color:#2C9AB7; text-decoration:underline;}
+.nestedContainer{background-color:#E5E5E5; border:1px solid #CCCCCC;}
+.emailButton{background-color:#2C9AB7; border-collapse:separate; border-radius:4px;}
+.buttonContent{color:#FFFFFF; font-family:Helvetica; font-size:18px; font-weight:bold; line-height:100%; padding:15px; text-align:center;}
+.buttonContent a{color:#FFFFFF; display:block; text-decoration:none;}
+.emailCalendar{background-color:#FFFFFF; border:1px solid #CCCCCC;}
+.emailCalendarMonth{background-color:#2C9AB7; color:#FFFFFF; font-family:Helvetica, Arial, sans-serif; font-size:16px; font-weight:bold; padding-top:10px; padding-bottom:10px; text-align:center;}
+.emailCalendarDay{color:#2C9AB7; font-family:Helvetica, Arial, sans-serif; font-size:60px; font-weight:bold; line-height:100%; padding-top:20px; padding-bottom:20px; text-align:center;}
+.clipwrapper        { position: relative; height: 80px; width: 63px; }
+.clip               { position: absolute; top: 0; left: 0; }
+
+.pos-1              { clip:rect(0 63px 80px 0); }
+.pos-2              { clip:rect(0 126px 80px 63px); left: -63px; }
+
+.headline  {padding:15px; width:100%; text-align:center; font-size:22px; font-family:Comic Sans MS;font-weight:900; color:#C37848;}
+.subheadline {font-weight:900; padding:15px; padding-bottom:5px;font-size:18px;font-family:courier new; line-height:27px;}
+.content {padding:15px; padding-top:5px; font-size:18px;font-family:courier new; line-height:27px;}
+.list-group-item {margin:20px;border-style:solid; border-width:0.8px; border-color:grey; padding:5px;}
+.smallprint {padding:5px; font-size:14px;font-family:courier new;}
+a.btn {
+	background-color:lightgrey;
+	border-color: rgba(0,0,0,0.3);
+	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+	color: #FFF;
+	display: inline-block;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: 1px solid rgba(0,0,0,0.3);
+	border-bottom-width: 3px;
+	margin:auto;
+	padding:20px 0 20px 0;
+	width:323px;
+	height:50px;
+	font-family:Comic Sans MS;
+	font-weight:900;
+	font-size: 22px;
+	width:100%;
+	text-decoration: none;
+}
+
+a.btn:hover {
+	background-color:rgb(133,200,197);
+	border-color: rgba(0,0,0,0.5);
+}
+
+a.btn:active {
+	background-color: darkgrey;
+	border-color: rgba(0,0,0,0.9);
+}
+
+
+@media only screen and (max-width: 480px){			
+body{width:100% !important; min-width:100% !important;} /* Force iOS Mail to render the email at full width. */
+table[id="emailBody"], table[class="flexibleContainer"]{width:100% !important;}
+img[class="flexibleImage"]{height:auto !important; width:100% !important;}
+table[class="emailButton"]{width:100% !important;}
+td[class="buttonContent"]{padding:0 !important;}
+td[class="buttonContent"] a{padding:15px !important;}
+td[class="textContentLast"], td[class="imageContentLast"]{padding-top:20px !important;}
+/*////// GENERAL STYLES //////*/
+td[id="bodyCell"]{padding-top:10px !important; padding-Right:10px !important; padding-Left:10px !important;}
+}
+</style>
+<!--
+Outlook Conditional CSS
+These two style blocks target Outlook 2007 & 2010 specifically, forcing
+columns into a single vertical stack as on mobile clients. This is
+primarily done to avoid the 'page break bug' and is optional.
+More information here:
+http://templates.mailchimp.com/development/css/outlook-conditional-css
+-->
+<!--[if mso 12]>
+<style type="text/css">
+.flexibleContainer{display:block !important; width:100% !important;}
+</style>
+<![endif]-->
+<!--[if mso 14]>
+<style type="text/css">
+.flexibleContainer{display:block !important; width:100% !important;}
+</style>
+<![endif]-->
+</head>
+<body>
+<center>
+<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" style ='padding:10px;background-color:rgb(133,200,197);'>
+<tr>
+<td align="center" valign="top" id="bodyCell">
+
+
+<table border="0" cellspacing="0" width="600" style="background-color:rgba(172, 232, 213,1)" id="emailBody" >
+<img src="tg_image" style="background-clip: padding-box;border:solid; border-color:rgba(172, 232, 213,0.9);border-radius:6px;max-height:100px;"/>
+
+<tr>
+	<td valign="top" class="textContent">
+		<h2 class ="headline">Start Saving at Tastes-Good.com!</h2>
+		<div style="background-color:white; padding:5px;">
+		<div class="content">You've been invited to join the fastest growing online ordering application in the country!  Our sales representative sales_name has explained some of the features of our great system.  These include: </div>
+		<div class="list-group-item">
+			<div class="subheadline">Lowest Commission in the Industry!</div>
+			<div class="content">Only 4.5% Commision (+2.5% for online payments).</div>
+		</div>
+		<div class="list-group-item">
+			<div class="subheadline">Immediate Profit Sharing Opportunities!*</div>
+			<div class="content">20% of commissions from customers you sign up.</div>
+			<div class="content">20% of commissions from restaurants you refer.</div>
+		</div>
+		<div class="list-group-item">
+			<div class="subheadline">You Make the  Menu, You Set Delivery Fees!</div>
+			<div class="content">Build your menu in less than an hour.  Complete control over prices, delivery charges, and menu options. </div>
+		</div>
+		<div class="list-group-item">
+			<div class="subheadline">Three Systems of Order Notification!</div>
+			<div class="content">Email, TTS phone calls, and Android push notifications make sure that you never miss an order.</div>
+		</div>
+		
+		<a class = "btn" href="salesforce_link" >
+		<div class="headline">
+		Click Here. Try it Today!
+		</div>
+		</a>
+		
+		<div class="smallprint">*see terms/conditions for profit sharing rules and restrictions </div>
+		</div>
+				
+		
+	</td>
+</tr>
+
+
+</table>
+
+<a href = "https://www.tastes-good.com/main.html?contact"><img src="contact_us_img" style="width:25%;background-clip: padding-box;border:solid; border-color:rgba(172, 232, 213,0.9);background-color:rgba(172, 232, 213,1);border-radius:6px;margin-top:10px;"/></a>
+
+<a href = "https://www.tastes-good.com/termsconditions.html"><img src="terms_img" style="width:25%;background-clip: padding-box;border:solid; border-color:rgba(172, 232, 213,0.9);background-color:rgba(172, 232, 213,1);border-radius:6px;margin-top:10px;"/></a>
+
+<a href = "https://www.tastes-good.com/privacy.html"><img src="privacy_img" style="width:25%;background-clip: padding-box;border:solid; border-color:rgba(172, 232, 213,0.9);background-color:rgba(172, 232, 213,1);border-radius:6px;margin-top:10px;"/></a>
+<!-- // EMAIL CONTAINER -->
+</td>
+</tr>
+</table>
+</center>
+</body>
+</html>

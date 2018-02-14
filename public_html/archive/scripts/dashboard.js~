@@ -1,0 +1,188 @@
+var hostname = location.hostname
+
+function OpenClose(closed){
+	var formData = new FormData ();
+	formData.append ('close', closed);
+	
+									
+		var xhr = new XMLHttpRequest();
+		
+		xhr.onload = function() {
+			console.log(xhr.response);		
+		};
+		// Open the connection.
+		xhr.open('POST', 'http://'+ hostname + '/uploader/open_close.php', true);
+		xhr.send(formData);	
+}
+	
+
+$(function(){ 
+	if(new_rest==1){
+		$('#tutorial_new').modal('show');
+	}
+	$('[name="store_credit"]').click(function(event){
+			var order_id = $(event.target).data("order_id");	
+			var x;
+			var order;
+			
+			for(x=0; x<orders.length; ++x){
+				if(order_id == orders[x].order_id){
+					order = orders[x];
+				}
+			}
+			
+			$('#credit').modal('show');
+			$('#credit_id').text(order.order_id);
+			$('#credit_name').text(order.user.fname + " " +order.user.lname);
+			$('#credit_phone').text(order.user.phone);
+			$('#credit_total').text(order.total);
+
+			
+			
+			$('#submit_credit').unbind("click").on('click', {order_id:order.order_id}, function(event){
+				
+				
+				var credit = /[\d]+[.]{0,1}[\d]{0,2}/.exec($('#credit_amount').val())[0];
+				var message = $('#credit_message').val();
+				
+				if(credit>0){
+				var formData = new FormData ();
+				formData.append ('order_id', event.data.order_id)
+				formData.append ('credit', credit)
+				formData.append ('message', message)
+										
+				var xhr = new XMLHttpRequest();
+				
+				xhr.onload = function() {
+					console.log(xhr.response);
+					setTimeout(function(){ $('#credit_order_received').modal("show"); }, 1000);
+					
+				};
+				
+				// Open the connection.
+				xhr.open('POST', 'https://'+ hostname + '/uploader/credit_order.php', true);
+				xhr.send(formData);		
+				$('#credit').modal("hide");	
+				}
+					
+			});
+			
+		});
+	
+	$('[name="refund_order"]').click(function(event){
+			var order_id = $(event.target).data("order_id");
+			var x;
+			var order;
+			
+			for(x=0; x<orders.length; ++x){
+				if(order_id == orders[x].order_id){
+					order = orders[x];
+				}
+			}
+			
+			$('#refund').modal('show');
+			$('#refund_id').text(order.order_id);
+			$('#refund_name').text(order.user.fname + " " +order.user.lname);
+			$('#refund_phone').text(order.user.phone);
+			$('#refund_total').text(order.total);
+			$('#max_refund').text(order.total);
+			
+			
+			
+			$('#submit_refund').unbind("click").on('click', {order_id:order.order_id}, function(event){
+				
+				var max = $('#max_refund').text();
+				var refund = /[\d]+[.]{0,1}[\d]{0,2}/.exec($('#refund_amount').val())[0];
+				var reason = $('#refund_reason').val();
+				
+				if(refund>0){
+				var formData = new FormData ();
+				formData.append ('order_id', event.data.order_id)
+				formData.append ('refund', refund)
+				formData.append ('reason', reason)
+										
+				var xhr = new XMLHttpRequest();
+				
+				xhr.onload = function() {
+					console.log(xhr.response);
+					setTimeout(function(){ $('#refund_order_received').modal("show"); }, 1000);
+					
+				};
+				
+				// Open the connection.
+				xhr.open('POST', 'https://'+ hostname + '/uploader/refund_order.php', true);
+				xhr.send(formData);		
+				$('#refund').modal("hide");	
+				}
+					
+			});
+	})
+		
+	$('[name="cancel_order"]').click(function(event){
+			
+			var order_id = $(event.target).data("order_id");
+			var x;
+			var order;
+			
+			for(x=0; x<orders.length; ++x){
+				if(order_id == orders[x].order_id){
+					order = orders[x];
+				}
+			}
+			
+			$('#cancel_order').modal('show');
+			$('#cancel_id').text(order.order_id);
+			$('#cancel_name').text(order.user.fname + " " +order.user.lname);
+			$('#cancel_phone').text(order.user.phone);
+			$('#cancel_total').text(order.total);
+			$('#submit_cancel').unbind("click").on('click', {order_id:order.order_id}, function(event){
+				var formData = new FormData ();
+				formData.append ('order_id', event.data.order_id)
+				formData.append ('reason', $('#cancel_reason').val())
+										
+				var xhr = new XMLHttpRequest();
+				
+				xhr.onload = function() {
+					setTimeout(function(){ $('#cancel_order_received').modal("show"); }, 1000);
+					console.log(xhr.response);		
+				};
+				
+				// Open the connection.
+				xhr.open('POST', 'https://'+ hostname + '/uploader/cancel_order.php', true);
+				xhr.send(formData);		
+				$('#cancel_order').modal("hide");	
+					
+			});
+			
+			
+	});
+		
+		
+	if($('#close_switch').is(':checked')){
+			$('#switch_status').text("CLOSED")
+		}else{
+			$('#switch_status').text("OPEN")
+			
+	}	
+		
+		
+	$('#close_switch').change(function(){
+		var closed;
+		if($('#close_switch').is(':checked')){
+			closed = 1
+			OpenClose(closed);
+			
+			$('#switch_status').text("CLOSED")
+		}else{
+			closed = 0
+			OpenClose(closed);
+			
+			$('#switch_status').text("OPEN")
+			
+		}
+			
+			
+	});
+		
+		
+});

@@ -1,0 +1,32 @@
+[25-Oct-2016 19:52:50 America/Denver] PHP Warning:  socket_connect(): unable to connect [110]: Connection timed out in /home1/tastesgo/public_html/printer/ping.php on line 26
+[25-Oct-2016 19:52:52 America/Denver] PHP Notice:  Undefined variable: address in /home1/tastesgo/public_html/printer/ping.php on line 37
+[25-Oct-2016 19:52:52 America/Denver] PHP Warning:  socket_connect(): Host lookup failed [-10001]: Unknown host in /home1/tastesgo/public_html/printer/ping.php on line 39
+[25-Oct-2016 19:53:36 America/Denver] PHP Parse error:  syntax error, unexpected '*' in /home1/tastesgo/public_html/printer/ping.php on line 85
+[25-Oct-2016 19:53:38 America/Denver] PHP Parse error:  syntax error, unexpected '*' in /home1/tastesgo/public_html/printer/ping.php on line 85
+[25-Oct-2016 19:53:50 America/Denver] PHP Warning:  socket_connect(): unable to connect [110]: Connection timed out in /home1/tastesgo/public_html/printer/ping.php on line 26
+[25-Oct-2016 19:53:50 America/Denver] PHP Warning:  socket_connect(): unable to connect [110]: Connection timed out in /home1/tastesgo/public_html/printer/ping.php on line 26
+[25-Oct-2016 19:56:35 America/Denver] PHP Notice:  Undefined variable: address in /home1/tastesgo/public_html/printer/ping.php on line 37
+[25-Oct-2016 19:56:35 America/Denver] PHP Warning:  socket_connect(): Host lookup failed [-10001]: Unknown host in /home1/tastesgo/public_html/printer/ping.php on line 39
+[25-Oct-2016 19:59:35 America/Denver] PHP Warning:  fsockopen(): unable to connect to 209.183.141.235:53413 (Connection timed out) in /home1/tastesgo/public_html/printer/ping.php on line 9
+[25-Oct-2016 19:59:35 America/Denver] PHP Notice:  Undefined variable: address in /home1/tastesgo/public_html/printer/ping.php on line 35
+[25-Oct-2016 19:59:35 America/Denver] PHP Warning:  socket_connect(): Host lookup failed [-10001]: Unknown host in /home1/tastesgo/public_html/printer/ping.php on line 37
+[25-Oct-2016 20:00:40 America/Denver] PHP Warning:  fsockopen(): unable to connect to 209.183.141.235:53413 (Connection timed out) in /home1/tastesgo/public_html/printer/ping.php on line 9
+[25-Oct-2016 20:00:40 America/Denver] PHP Notice:  Undefined variable: address in /home1/tastesgo/public_html/printer/ping.php on line 35
+[25-Oct-2016 20:00:43 America/Denver] PHP Warning:  socket_connect(): Host lookup failed [-10001]: Unknown host in /home1/tastesgo/public_html/printer/ping.php on line 37
+[25-Oct-2016 20:04:47 America/Denver] PHP Warning:  socket_set_option(): unable to set socket option [13]: Permission denied in /home1/tastesgo/public_html/printer/ping.php on line 31
+[25-Oct-2016 20:05:32 America/Denver] PHP Warning:  socket_set_option(): unable to set socket option [13]: Permission denied in /home1/tastesgo/public_html/printer/ping.php on line 31
+[25-Oct-2016 20:05:59 America/Denver] PHP Warning:  socket_set_option() expects exactly 4 parameters, 3 given in /home1/tastesgo/public_html/printer/ping.php on line 31
+[25-Oct-2016 20:06:04 America/Denver] PHP Warning:  socket_set_option() expects exactly 4 parameters, 3 given in /home1/tastesgo/public_html/printer/ping.php on line 31
+[25-Oct-2016 20:10:34 America/Denver] PHP Notice:  Undefined variable: address in /home1/tastesgo/public_html/printer/ping.php on line 37
+[25-Oct-2016 20:10:34 America/Denver] PHP Warning:  socket_connect(): Host lookup failed [-10001]: Unknown host in /home1/tastesgo/public_html/printer/ping.php on line 39
+[25-Oct-2016 20:10:36 America/Denver] PHP Notice:  Undefined variable: address in /home1/tastesgo/public_html/printer/ping.php on line 37
+[25-Oct-2016 20:10:41 America/Denver] PHP Warning:  socket_connect(): Host lookup failed [-10003]: Unknown server error in /home1/tastesgo/public_html/printer/ping.php on line 39
+[25-Oct-2016 20:15:26 America/Denver] PHP Warning:  socket_connect(): unable to connect [110]: Connection timed out in /home1/tastesgo/public_html/printer/ping.php on line 39
+[25-Oct-2016 20:16:26 America/Denver] PHP Warning:  socket_connect(): unable to connect [110]: Connection timed out in /home1/tastesgo/public_html/printer/ping.php on line 39
+[25-Oct-2016 20:16:26 America/Denver] PHP Warning:  socket_connect(): unable to connect [110]: Connection timed out in /home1/tastesgo/public_html/printer/ping.php on line 39
+[25-Oct-2016 20:29:47 America/Denver] PHP Warning:  socket_connect(): unable to connect [110]: Connection timed out in /home1/tastesgo/public_html/printer/ping2.php on line 26
+[25-Oct-2016 20:30:48 America/Denver] PHP Warning:  socket_connect(): unable to connect [110]: Connection timed out in /home1/tastesgo/public_html/printer/ping2.php on line 26
+[25-Oct-2016 20:30:48 America/Denver] PHP Warning:  socket_connect(): unable to connect [110]: Connection timed out in /home1/tastesgo/public_html/printer/ping2.php on line 26
+[26-Oct-2016 15:10:58 America/Denver] PHP Warning:  socket_connect(): unable to connect [111]: Connection refused in /home1/tastesgo/public_html/printer/ping2.php on line 26
+[26-Oct-2016 15:17:01 America/Denver] PHP Fatal error:  Using $this when not in object context in /home1/tastesgo/public_html/printer/ping.php on line 79
+[26-Oct-2016 15:24:15 America/Denver] PHP Fatal error:  Using $this when not in object context in /home1/tastesgo/public_html/printer/ping.php on line 79

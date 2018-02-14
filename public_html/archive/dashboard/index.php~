@@ -1,0 +1,616 @@
+<?php 
+include '../boilerplate.php';
+
+if(!isset($_SESSION['pass'])||!$_SESSION['pass']){
+	header('Location: ../');
+}
+
+
+
+checkProduction();?>
+<?php include '../dbconnect.php'; 
+html_Header("Restaurant Dashboard");
+include '../header.php';
+srcJavascript("../scripts/dashboard.js");
+
+/*
+srcJavascript("js/chart.min.js");
+srcJavascript("js/chart-data.js");
+*/
+//get the page hits. 
+
+	
+$community = $_SESSION['community'];
+$rest_id = $_SESSION['rest_id'];
+
+$rest= new Restaurant;
+$rest->grabRest($rest_id);
+
+$comm=new Community ();
+$comm->grabComm($community);
+
+
+
+$sql = "SELECT count(*) FROM page_hits WHERE rest_id = ?";
+$stmt=$conn->prepare($sql);
+$stmt->bind_param("i", $rest_id);
+$stmt->execute();
+$stmt->bind_result($hitcount);
+$stmt->fetch();
+$stmt->close();
+
+$sql = "SELECT COUNT(*), SUM(order_total) FROM restaurant_orders WHERE rest_id = ?";
+$stmt=$conn->prepare($sql);
+$stmt->bind_param("i", $rest_id);
+$stmt->execute();
+$stmt->bind_result($count_orders, $sales_total);
+$stmt->fetch();
+$stmt->close();
+
+$users = [];
+$sql= "SELECT user_id, count(*), SUM(order_total)  FROM restaurant_orders WHERE rest_id =? GROUP BY user_id ORDER BY SUM(order_total)";
+$stmt=$conn->prepare($sql);
+$stmt->bind_param("i", $rest_id);
+$stmt->execute();
+$stmt->store_result();
+$user_count = $stmt->num_rows;
+$stmt->bind_result($user_id, $order_count, $order_total);
+while($stmt->fetch()){
+	$a= new User ();
+	$a->user_id = $user_id;
+	$a->order_count = $order_count;
+	$a->order_total = $order_total;
+	array_push($users, $a);
+}	
+$stmt->close();
+
+foreach($users as $user){
+	$user->fromId($user->user_id);
+}
+
+$last_ten = [];
+$sql="SELECT request_date, request_time, link, coupon, order_id, user_id, order_time, payment_type, order_total, order_delivery, delivery_charge, tip, addr_id, discount, payment_fee, commission, tg_points FROM restaurant_orders WHERE rest_id = ?  ORDER BY order_time DESC LIMIT 10";
+$stmt=$conn->prepare($sql);
+$stmt->bind_param("i", $rest_id);
+$stmt->execute();
+$stmt->bind_result($request_date, $request_time, $link, $coupon, $order_id, $user_id, $order_time, $payment_type, $order_total, $order_delivery, $delivery_charge, $tip, $addr_id, $discount, $payment_fee, $commission, $tg_points);
+while($stmt->fetch()){
+	$a=new Order();
+	$a->order_id=$order_id;
+	$a->user_id = $user_id;
+	
+	$a->addr_id= $addr_id;
+	
+	$a->request_date = 	$request_date;
+	$a->request_time = 	$request_time;
+	$a->deliveryOption=$order_delivery;
+	$a->deliveryCharge = $delivery_charge;
+	$a->tip = $tip;
+	$a->total = $order_total;
+	$a->timestamp=$order_time;
+	$a->paymentType= $payment_type;
+	$a->coupon = $coupon;
+	$a->discount =$discount;
+	$a->tg_points= $tg_points;
+	$a->link=$link;
+
+	array_unshift($last_ten, $a);
+}
+$stmt->close();
+
+foreach($last_ten as $a){
+	if($a->user_id){
+		$b = new User();
+		$b->fromId($a->user_id);
+		$a->user = $b;
+	}
+	if($a->addr_id){	
+		$b = new Address();
+		$b->fromId($a->addr_id);
+		$a->address = $b;
+	}
+}
+
+/*
+if ($result->num_rows > 0) {
+    // output data of each row
+    while($row = $result->fetch_assoc()) {
+    	$date = date('dmY', $row['date']);
+    	$hit = new stdClass;
+        $hit->user_id = $row['user_id'];
+        $hit->hit_date = $date;
+        array_push($pageHits, $hit);
+        }
+} 
+
+echo "<script> pagehits = ".json_encode($pageHits)." </script>";
+*/
+$new_rest = getattribute('new_rest');
+if($new_rest){
+	echo "<script>new_rest=1</script>";
+}else{
+	echo "<script>new_rest=0</script>";
+}
+
+?> 
+
+
+<script> rest_id = <?php echo $rest->rest_id; ?> ;
+		orders = <?php echo json_encode($last_ten); ?>;
+
+</script>
+<!--Icons-->
+<script src="js/lumino.glyphs.js"></script>
+
+<!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		
+		<?php include 'sidebar_content.php' ?>
+
+	</div><!--/.sidebar-->
+		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2">			
+			
+		<div class="row" style = "background-color:rgba(210,245,225,1);margin-left:5px;margin-right:5px;" >
+			<div class="col-xs-12 ">
+				<h3 style = "margin-left:0; margin-right:0; margin-top:10px; margin-bottom:0; padding-top:10px; padding-bottom:10px; background-color:rgba(210,245,225,0.8);width:100%;text-align:center;font-size:30px;">Dashboard: <span style="color: #633E26;font-size:25px;"><?php echo $rest->title; ?></span>  <button onclick = "$('#tutorial').modal('show');" class = "btn btn-primary" style="float:right;font-size:25px" >?</button></h3>
+				<h2 style = "margin-top:0; padding-top:10px; width:100%;text-align:center;font-size:20px;"> 
+				 	<div class = "row" style="background-color:#f0ffff">
+						<div class = "col-xs-12 col-sm-6">
+							
+							<div title = "In TESTING mode your restaurant will 
+only be visible to you and other restaurant partners. 
+You must be logged in to see your restaurant."  style = "text-align:left;margin-left:15%;">
+							<h3 style="font-size:25px">Status: </h3><br>
+							<strong>Community: </strong> <?php echo $community; ?> <br> 
+							<strong>Community Status: </strong> <?php echo $comm->status; ?> <br> 
+							<strong >Restaurant Status: </strong> <?php echo $rest->status; ?> <br> 
+							</div>
+						</div>
+						<div class = "col-xs-12 col-sm-6">
+							<h3 style="font-size:25px">Main Switch: </h3><br>
+							<h2 style = "background-color:#f0ffff; margin-top:0; padding-top:10px; width:100%;text-align:center;font-size:20px;"> 
+							<label class="switch">
+							  <input id = "close_switch" type="checkbox" <?php if($rest->closed){echo "checked";} ?> >
+							  <div class="slider"></div>
+							</label> <br>
+							<strong><span id="switch_status">CLOSED</span></strong>
+						</div>
+				 	</div>
+				
+				</h2>
+			</div>
+		</div><!--/.row-->
+		
+		
+		<div class="row" style = "background-color:rgba(210,245,225,1);margin-top:10px; margin-left:5px;margin-right:5px;padding-bottom:10px;">
+			<div class="col-xs-12 " style = "margin-bottom:10px;">
+				<h3 style = "margin-left:0; margin-right:0; margin-top:10px; margin-bottom:0; padding-top:10px; padding-bottom:10px; background-color:rgba(210,245,225,0.8);width:100%;text-align:center;font-size:30px;">Statistics:</h3>
+			</div>
+			<div class="col-xs-12 col-md-3" style="background-color:#f0ffff">
+				<div class="panel-blue panel-widget ">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked bag"><use xlink:href="#stroked-bag"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<h2><strong> <?php echo $order_count; ?></strong>
+							<div class="text-muted">Orders</div></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-3" style="background-color:#f0ffff">
+				<div class="panel-orange panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked line-graph"><use xlink:href="#stroked-line-graph"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<h2><strong>$ <?php echo $sales_total; ?></strong>
+							<div class="text-muted">Sales Total</div></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-3" style="background-color:#f0ffff">
+				<div class="panel-teal panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph"><use xlink:href="#stroked-male-user"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<h2><strong><?php echo $user_count; ?></strong>
+							<div class="text-muted">Customers</div></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-3" style="background-color:#f0ffff">
+				<div class="panel-red panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph"><use xlink:href="#stroked-app-window-with-content"></use></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<h2><strong><?php echo $hitcount; ?></strong>
+							<div class="text-muted">Page Views</div></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/.row-->
+	
+	
+		<div class="row" style = "background-color:rgb(210,245,225);margin-top:10px; margin-left:5px;margin-right:5px;padding-bottom:10px;">
+			<div class="col-xs-12 " style = "margin-bottom:10px;">
+				<h3 style = "margin-left:0; margin-right:0; margin-top:10px; margin-bottom:0; padding-top:10px; padding-bottom:10px; background-color:rgba(210,245,225,0.8);width:100%;text-align:center;font-size:30px;">Recent Orders:</h3>
+				<button class = "btn-block">
+				<div class = "row">
+					<div class = "col-xs-1 no-padding">
+						ID
+					</div>
+					<div class = "col-xs-2 no-padding">
+						User Name
+					</div>
+					<div class = "col-xs-2 no-padding">
+						Payment Method
+					
+					</div>
+					<div class = "col-xs-2 no-padding">
+						Delivery
+					</div>
+					<div class = "col-xs-3 no-padding">
+						Date
+					</div>
+					<div class = "col-xs-2 no-padding">
+						Time
+					</div>
+				</div>
+				</button>
+			<?php foreach($last_ten as $x){
+				/*
+				
+				*/
+				
+				?>
+				<button class = "btn btn-default btn-block" id="order_btn_<?php echo $x->order_id; ?>" data-toggle="collapse" data-target="#order_ext_<?php echo $x->order_id; ?>">
+				<div class = "row">
+					<div class = "col-xs-1 no-padding">
+						<?php echo $x->order_id ."."; ?>
+					</div>
+					<div class = "col-xs-2 no-padding">
+						<?php echo $x->user->fname ." ". $x->user->lname; ?>
+					</div>
+					<div class = "col-xs-2 no-padding">
+						<?php if($x->paymentType=="online"){echo "PAID"; }else{ echo "CASH";} ?>
+					
+					</div>
+					<div class = "col-xs-2 no-padding">
+						<?php if($x->deliveryOption){echo "DELIVERY"; }else{ echo "PICKUP";} ?>
+					</div>
+					<div class = "col-xs-3 no-padding">
+						<?php echo $x->request_date; ?>
+					</div>
+					<div class = "col-xs-2 no-padding">
+						<?php echo $x->request_time; ?>
+					</div>
+				</div>
+				</button>
+				<div id = "order_ext_<?php echo $x->order_id; ?>" class="collapse" name = "order_expand" style = "background-color:#f0ffff; margin-top:0;padding-top:15px; padding-left:20px; padding-right:20px; margin-bottom:10px; border-width:0 2px 0 2px; border-color:#633E26;;border-style:solid;">
+					<h2 style="line-height:20px;font-size:15px">
+					<div class = "row">
+						<div class = "col-xs-12 no-padding" >
+							<strong> Customer Phone: </strong>  <?php echo $x->user->phone; ?>
+						</div>
+						
+						<?php if($x->deliveryOption){ ?>
+							<div class = "col-xs-6 no-padding">
+							 	<strong>Delivery Charge:</strong>$ <?php echo $x->deliveryCharge; ?>
+							</div>
+							<div class = "col-xs-6 no-padding">
+							 	<strong>Delivery Tip:</strong> $ <?php echo $x->tip; ?>
+							</div>
+							<div class = "col-xs-12 no-padding">
+							 	<strong>Delivery Address:</strong>  <?php echo $x->address->address; ?>
+							</div>	
+						<?php } ?>	
+							
+					</div>
+					</h2>
+					<div class = "row" >
+						<div class = "col-xs-3 no-padding">
+							<button class = "btn btn-default btn-block" name="store_credit" data-order_id = "<?php echo $x->order_id; ?>" >Store Credit</button>
+						</div>
+						<div class = "col-xs-3 no-padding">
+							<button class = "btn btn-default btn-block" name="cancel_order" data-order_id = "<?php echo $x->order_id; ?>" >Cancel Order</button>
+						</div>
+						<div class = "col-xs-3 no-padding">
+							<button class = "btn btn-default btn-block" name="refund_order" data-order_id = "<?php echo $x->order_id; ?>" title="Only PAID orders can be refunded" <?php if($x->paymentType=="offline"){echo "disabled"; } ?> >Partial Refund</button>
+						</div>
+						<div class = "col-xs-3 no-padding">
+							<a href="<?php echo "../uploader/push_pdf.php?order_id=". $x->order_id; ?>" class = "btn btn-default btn-block">Order PDF</a>
+						</div>	
+					</div>
+				
+				
+				</div>
+				
+			<?php }
+			?>
+			
+			</div>
+		</div><!--/.row-->
+	</div><!--/.main frame -->
+	
+<div class="modal fade" id="credit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class= "modal-title">Send Store Credit: </h3>
+      	<button type="button" class="close" onclick="$('#credit').modal('hide');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+      		<div class = "row" style="font-size:18px;">
+				<div class="col-xs-12 col-sm-6"><strong>Order ID:</strong> <span id = "credit_id"> </span> </div>
+				<div class="col-xs-12 col-sm-6"><strong>Name:</strong> <span id = "credit_name"> </span> </div>
+				<div class="col-xs-12 col-sm-6"><strong>Phone:</strong> <span id = "credit_phone"> </span> </div>
+				<div class="col-xs-12 col-sm-6"><strong>Total:</strong>$ <span id = "credit_total"> </span> </div>
+			</div>
+			<br>
+      		<div class = "row" style="line-height:30px; font-size:15px;">
+				<div class ="col-xs-3">
+					<label for="credit_amount">Credit Amount:</label>
+				</div>
+				<div class ="col-xs-5">
+					<input type="text" id = "credit_amount" class = "form-control" placeholder="0.00"/>
+				</div>
+			</div>
+			<div>
+				<label for="credit_message" style="line-height:30px; font-size:15px;">Message:  </label>
+				<textarea id="credit_message" class = "form-control" rows=4 placeholder="Message to Customer"></textarea>
+			</div>
+	  </div>
+      <div class="modal-footer">
+			<button class="btn btn-primary" id = "submit_credit" type="button">Submit</button>
+			<button class="btn btn-primary" id = "Cancel" onclick="$('#credit').modal('hide')" type="button">Cancel</button>
+      </div>    
+    </div>
+  </div>
+</div>	
+	
+<div class="modal fade" id="refund" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class= "modal-title">Refund Order: </h3>
+      	<button type="button" class="close" onclick="$('#refund').modal('hide');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+      		<div class = "row">
+				<div class="col-xs-12 col-sm-6">Order ID: <span id = "refund_id"> </span> </div>
+				<div class="col-xs-12 col-sm-6">Name: <span id = "refund_name"> </span> </div>
+				<div class="col-xs-12 col-sm-6">Phone: <span id = "refund_phone"> </span> </div>
+				<div class="col-xs-12 col-sm-6">Order Total: <span id = "refund_total"> </span> </div>
+				
+			</div>
+      		<div class = "row" style="line-height:30px; font-size:15px;">
+				<div class ="col-xs-3">
+					<label for="refund_amount">Refund Amount:</label>
+				</div>
+				<div class ="col-xs-5">
+					<input type="text" id = "refund_amount" class = "form-control" placeholder="0.00"/>
+				</div>
+				<div class ="col-xs-4">
+					 Maximum Refund: <span id="max_refund"> </span>
+				</div>
+			</div>
+			<div>
+				<label for="refund_reason" style="line-height:30px; font-size:15px;">Reason:  </label>
+				<textarea id="refund_reason" class = "form-control" rows=4 placeholder="Reason for Refund"></textarea>
+			</div>
+	  </div>
+      <div class="modal-footer">
+			<button class="btn btn-primary" id = "submit_refund" type="button">Submit</button>
+			<button class="btn btn-primary" id = "Cancel" onclick="$('#refund').modal('hide')" type="button">Cancel</button>
+      </div>    
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="cancel_order" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class= "modal-title">Cancel Order: </h3>
+      	<button type="button" class="close" onclick="$('#cancel_order').modal('hide');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+      		<div class = "row">
+      		<div class="col-xs-6 col-sm-4">Order ID: <span id = "cancel_id"> </span> </div>
+      		<div class="col-xs-6 col-sm-4">Name: <span id = "cancel_name"> </span> </div>
+      		<div class="col-xs-6 col-sm-4">Phone: <span id = "cancel_phone"> </span> </div>
+      		<div class="col-xs-6 col-sm-4">Total: <span id = "cancel_total"> </span> </div>
+      		<div class="col-xs-12">**If order cancelation is confirmed the customer will receive a full refund**</div>
+			</div>
+      		<div>
+				<label for="cancel_reason" style="line-height:30px; font-size:15px;">Reason:  </label>
+				<textarea id="cancel_reason" class = "form-control" rows=4 placeholder="Reason for Cancelation"></textarea>
+			</div>
+	  </div>
+      <div class="modal-footer">
+			<button class="btn btn-primary" id = "submit_cancel" type="button">Request Cancelation</button>
+			<button class="btn btn-primary" onclick="$('#cancel_order').modal('hide')" type="button">Nevermind..</button>
+      </div>    
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="credit_order_received" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:rgb(210,245,225);">
+        <h3 class= "modal-title">Credit Sent: </h3>
+      	<button type="button" class="close" onclick="$('#credit_order_received').modal('hide');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+      			<div style="line-height:30px; font-size:18px;">We've sent the customer an email with the store credit attached!</div>			
+	  </div>
+      <div class="modal-footer">
+			<button class="btn btn-primary" onclick="$('#credit_order_received').modal('hide')" type="button">Back</button>
+      </div>    
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="cancel_order_received" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:rgb(210,245,225);">
+        <h3 class= "modal-title">Cancellation Requested: </h3>
+      	<button type="button" class="close" onclick="$('#cancel_order_received').modal('hide');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+      			<div style="line-height:30px; font-size:18px;">Thank you for letting us know. <br> We will review the order and send a confirmation email when the cancellation is approved.</div>			
+	  </div>
+      <div class="modal-footer">
+			<button class="btn btn-primary" onclick="$('#cancel_order_received').modal('hide')" type="button">Back</button>
+      </div>    
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="refund_order_received" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:rgb(210,245,225);">
+        <h3 class= "modal-title">Refund Requested: </h3>
+      	<button type="button" class="close" onclick="$('#cancel_order_received').modal('hide');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+      			<div style="line-height:30px; font-size:18px;">The transaction has been refunded. <br>The customer has been informed and you should receive a confirmation email shortly.</div>			
+	  </div>
+      <div class="modal-footer">
+			<button class="btn btn-primary" onclick="$('#cancel_order_received').modal('hide')" type="button">Back</button>
+      </div>    
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="tutorial_new" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:rgb(210,245,225);">
+        <h3 class= "modal-title">Website Tutorial: </h3>
+      	<button type="button" class="close" onclick="$('#tutorial_new').modal('hide');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+      			<div style="line-height:30px; font-size:18px;">Welcome to Tastes-Good.com restaurant partners Dashboard. 
+      			<br>  From the Dashboard you can:
+      			<ul> 
+					<li>open/close your restaurant</li>
+					<li>track business performance</li>
+					<li>perform actions on recent orders</li>
+      			</ul>
+      			We have prepared a tutorials to help you familiarize yourself with our interface.  
+      			<br><br> Click the <img src = "tutorial/tutorial_icon.jpg" style="display:inline-block" /> buttons to learn more about the features of each page.
+      			</div>
+      </div>
+      <div class="modal-footer">
+			<button class="btn btn-primary" onclick="$('#tutorial_new').modal('hide')" type="button">Okay</button>
+      </div>    
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tutorial" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:rgb(210,245,225);">
+        <h3 class= "modal-title" style="line-height:30px;font-size:25px;">Your Dashboard: </h3>
+      	<button type="button" class="close" onclick="$('#tutorial').modal('hide');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        
+      </div>
+      <div class="modal-body">
+      			<div>
+      			<h3  style="line-height:25px;font-size:22px;"> 1. Main Switch: </h3>
+      			<h2 style="line-height:25px;font-size:20px;"> This switch allows you to manually open/close your restaurant </h2>
+      			<h3 style="line-height:25px;font-size:22px;"> 2. Manage Recent Orders: </h3>
+      			<h2  style="line-height:25px;font-size:20px;"> When you start receiving orders they will look like this: </h2>
+      			<img src = "tutorial/recent_orders.jpg" />
+      			<br>
+      			<h2  style="line-height:25px;font-size:20px;">Click an order will reveal the order details (e.g. Order #135)</h2>
+      			<h2  style="line-height:25px;font-size:20px;">Once the order is expanded you can perform the following actions:</h2>
+      			<ul  style="line-height:25px;font-size:20px;">
+      				<li>Request Order Cancellation--For PAID orders the customer receives a full refund.</li>
+      				<li>Partial Refund--Only for PAID orders. This button allows the restaurant to partially refund an order.</li>
+      				<li>Order PDF--This button brings up the pdf document of the order.</li>
+      			</ul>
+      			
+      			</div>
+      </div>
+      <div class="modal-footer">
+			<button class="btn btn-primary" onclick="$('#tutorial').modal('hide')" type="button">Okay</button>
+      </div>    
+    </div>
+  </div>
+</div>
+	
+	<?php /*
+		<div class="row" style="margin-top:15px">
+			<div class="col-lg-12">
+				<div class="panel-default">
+					<div class="panel-heading">Site Traffic Overview</div>
+					<div class="panel-body jumbotron">
+						<div class="canvas-wrapper">
+							<canvas class="main-chart" id="line-chart" height="200" width="600"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--/.row-->
+
+<script>
+$(function (){
+		
+		var ctx = document.getElementById("line-chart").getContext("2d");
+		window.Line_Chart =  new Chart(ctx, {
+			type: 'line',
+			data: window.pagehits
+		});
+		
+		
+});
+</script>
+*/ 
+?>
+	
+<?php
+
+if($new_user = getattribute('new_rest')){
+?>
+
+
+
+
+<?php	
+}
+
+?>
+
+
+
+</body>
+
+</html>
+
+<?php $conn->close(); ?>
